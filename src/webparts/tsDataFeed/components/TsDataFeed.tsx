@@ -4,6 +4,7 @@ import { ITsDataFeedProps } from "./ITsDataFeedProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import EventLevelForm from "./pages/EventLevelForm";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./TsDataFeed.css";
 import TeamLevelForm from "./pages/TeamLevelForm";
 
 export default class TsDataFeed extends React.Component<ITsDataFeedProps, {}> {
@@ -17,7 +18,7 @@ export default class TsDataFeed extends React.Component<ITsDataFeedProps, {}> {
     } = this.props;
 
     return (
-      <div className="appBackground">
+      <div className="container">
         <h2>Welcome, {escape(userDisplayName)}!</h2>
         <EventLevelForm />
         <div className="mt-3">
