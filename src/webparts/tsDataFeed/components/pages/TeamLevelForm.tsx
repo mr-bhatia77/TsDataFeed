@@ -31,19 +31,29 @@ const TeamLevelForm = () => {
         </Row>
         <Row>
           <Col xs={6}>
-            <Form.Group as={Col} className="mb-3">
+            <Form.Group className="mb-3">
               <Form.Label>Veteran/new:</Form.Label>
-              <Form.Select aria-label="Default select example">
+              <Form.Select>
                 <option value="Veteran">Veteran</option>
                 <option value="New">New</option>
               </Form.Select>
             </Form.Group>
           </Col>
         </Row>
-        
+        <Row>
+          <Col xs={6}>
+            <Form.Group className="mb-3">
+              <Form.Label>Type:</Form.Label>
+              <Form.Select >
+                <option value="Corporate">Corporate</option>
+                <option value="Other">Other</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
         <Form.Group className="mb-3">
           <Form.Label>Team Priority</Form.Label>
-          <Form.Select aria-label="Default select example">
+          <Form.Select>
             <option>Select Team Priority</option>
             <option value="A">A</option>
             <option value="B">B</option>
@@ -51,7 +61,6 @@ const TeamLevelForm = () => {
             <option value="Mega">Mega</option>
           </Form.Select>
         </Form.Group>
-
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Team Association(select all applicable)</Form.Label>
           <Form.Check type="checkbox" label="Board" />
@@ -63,20 +72,19 @@ const TeamLevelForm = () => {
           <Form.Check type="checkbox" label="RC Member/Team" />
           <Form.Check type="checkbox" label="RC Secured" />
           <Form.Check type="checkbox" label="Sponsor" />
-          {/* <Form.Control type="text" placeholder="select all applicable" /> */}
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Staff fiscal year forecast </Form.Label>
+          <Form.Label>Staff fiscal year forecast (aka TS Team Forecast attribute today) </Form.Label>
           <Form.Control type="number" />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Team lead staff </Form.Label>
           <Form.Control type="number" />
         </Form.Group>
-
-        {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group> */}
+        <Form.Group className="mb-3">
+          <Form.Label>Interaction Note: </Form.Label>
+          <Form.Control type="textarea" />
+        </Form.Group>
         <Button variant="primary" type="submit">
           Submit
         </Button>
