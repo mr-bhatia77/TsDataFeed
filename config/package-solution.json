@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "ts-data-feed-client-side-solution",
+    "id": "abcd05e0-f0e1-402a-a64c-3608e914d96d",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.16.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "ts-data-feed description"
+      },
+      "longDescription": {
+        "default": "ts-data-feed description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "ts-data-feed Feature",
+        "description": "The feature that activates elements of the ts-data-feed solution.",
+        "id": "0bbe1d43-4174-4e4e-8891-f51351130cd3",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/ts-data-feed.sppkg"
+  }
+}

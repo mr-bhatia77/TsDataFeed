@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "ts-data-feed-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tsDataFeed/TsDataFeedWebPart.js",
+          "manifest": "./src/webparts/tsDataFeed/TsDataFeedWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "TsDataFeedWebPartStrings": "lib/webparts/tsDataFeed/loc/{locale}.js"
+  }
+}

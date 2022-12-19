@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.14.2",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "version": "1.16.0",
+    "libraryName": "ts-data-feed",
+    "libraryId": "abcd05e0-f0e1-402a-a64c-3608e914d96d",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "ts-data-feed",
+    "solutionShortDescription": "ts-data-feed description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
