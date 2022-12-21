@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import InputGroup from "react-bootstrap/InputGroup";
 // import Dropdown from 'react-bootstrap/Dropdown';
 
 // const data = [
@@ -17,16 +18,29 @@ const EventLevelForm = () => {
       <h3>Event Level</h3>
       <Form>
         <Row>
+          <Col xs={6}>
             <Form.Group as={Col} className="mb-3">
-              <Form.Label>Event Name: </Form.Label>
+              <Form.Label>Chapter: </Form.Label>
               <Form.Select>
-                <option value="Event 1">Event 1</option>
-                <option value="Event 2">Event 2</option>
-                <option value="Event 3">Event 3</option>
-                <option value="Event 4">Event 4</option>
+                <option value="Chapter 1">Chapter 1</option>
+                <option value="Chapter 2">Chapter 2</option>
+                <option value="Chapter 3">Chapter 3</option>
+                <option value="Chapter 4">Chapter 4</option>
               </Form.Select>
             </Form.Group>
-            <Form.Group as={Col} className="mb-3">
+          </Col>
+        </Row>
+        <Row>
+          <Form.Group as={Col} className="mb-3">
+            <Form.Label>Event Name: </Form.Label>
+            <Form.Select>
+              <option value="Event 1">Event 1</option>
+              <option value="Event 2">Event 2</option>
+              <option value="Event 3">Event 3</option>
+              <option value="Event 4">Event 4</option>
+            </Form.Select>
+          </Form.Group>
+          {/* <Form.Group as={Col} className="mb-3">
               <Form.Label>Event Id: </Form.Label>
               <Form.Select>
                 <option value="Id:Event 1">Id:Event 1</option>
@@ -34,17 +48,14 @@ const EventLevelForm = () => {
                 <option value="Id:Event 3">Id:Event 3</option>
                 <option value="Id:Event 4">Id:Event 4</option>
               </Form.Select>
-            </Form.Group>
+            </Form.Group> */}
         </Row>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+        {/* <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>National Manager</Form.Label>
           <Form.Control type="text" placeholder="Enter Name" />
-          {/* <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text> */}
-        </Form.Group>
+        </Form.Group> */}
 
-        <Row>
+        {/* <Row>
           <Form.Group as={Col} className="mb-3" controlId="formBasicPassword">
             <Form.Label>Season</Form.Label>
             <Form.Control type="text" placeholder="season" />
@@ -53,23 +64,55 @@ const EventLevelForm = () => {
             <Form.Label>Honored hero</Form.Label>
             <Form.Control type="text" placeholder="Honored hero" />
           </Form.Group>
+        </Row> */}
+        <Row>
+          <Form.Group as={Col} className="mb-3">
+            <Form.Label>Overall IND/Other Rev YTD Forecast:</Form.Label>
+            <InputGroup>
+                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                />
+              </InputGroup>
+            <Form.Text className="text-muted">
+              Last modified - 21-12-2022
+            </Form.Text>
+          </Form.Group>
+          <Form.Group as={Col} className="mb-3">
+            <Form.Label>Overall Team YTD Forecast:</Form.Label>
+            <InputGroup >
+                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                />
+              </InputGroup>
+            <Form.Text className="text-muted">
+              Last modified - 21-12-2022
+            </Form.Text>
+          </Form.Group>
         </Row>
         <Row>
-        <Form.Group as={Col} className="mb-3">
-          <Form.Label>Overall IND/Other Rev YTD Forecast:</Form.Label>
-          <Form.Control type="number" />
-        </Form.Group>
-        <Form.Group as={Col} className="mb-3">
-          <Form.Label>Overall Team YTD Forecast:</Form.Label>
-          <Form.Control type="number" />
-        </Form.Group>
+          <Col xs={9}>
+            <Form.Group className="mb-3">
+            <Form.Label>Campaign YTD forecast:</Form.Label>
+              <InputGroup>
+                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                  disabled
+                />
+              </InputGroup>
+            </Form.Group>
+          </Col>
         </Row>
-        <Form>
-        </Form>
-
-        {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group> */}
+        <Row>
+          <Col xs={9}>
+            <Form.Group className="mb-3">
+              <Form.Label>Forecast Info:</Form.Label>
+              <Form.Control type="textarea" />
+            </Form.Group>
+          </Col>
+        </Row>
         <Button variant="primary" type="submit">
           Submit
         </Button>
