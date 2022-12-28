@@ -4,4 +4,5 @@ export interface ITsDataFeedProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+  userEmail: string;
 }

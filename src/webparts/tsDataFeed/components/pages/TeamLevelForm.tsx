@@ -4,12 +4,35 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
+import Card from "react-bootstrap/Card";
 
 const TeamLevelForm = () => {
+  const submitHandler = (e: any) => {
+    e.preventDefault();
+    const getAssociationList = () => {
+      const checkBoxList = [...e.target].slice(8, 17);
+
+      const markedCheckBoxList: string[] = [];
+      checkBoxList.forEach((checkBox) => {
+        console.log(checkBox);
+        if (checkBox.checked) markedCheckBoxList.push(checkBox.value);
+      });
+      return markedCheckBoxList;
+    };
+    const payload = {
+      event: e.target[0].value,
+      team: e.target[1].value,
+      team_priority: e.target[7].value,
+      team_association: getAssociationList(),
+    };
+    console.log("payload = ", payload);
+  };
+
   return (
-    <>
-      <h3>Team Level</h3>
-      <Form>
+    <Card>
+      <Card.Header><h3>Team Level</h3></Card.Header>
+      <Card.Body>
+      <Form onSubmit={submitHandler}>
         <Row>
           <Col xs={7}>
             <Form.Group className="mb-3">
@@ -105,12 +128,6 @@ const TeamLevelForm = () => {
         <Row>
           <Col xs={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Team Captain Name:</Form.Label>
-              <Form.Control type="text" />
-            </Form.Group>
-          </Col>
-          <Col xs={6}>
-            <Form.Group className="mb-3">
               <Form.Label>Team Priority</Form.Label>
               <Form.Select>
                 <option>Select Team Priority</option>
@@ -124,25 +141,31 @@ const TeamLevelForm = () => {
         </Row>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Team Association(select all applicable)</Form.Label>
-          <Form.Check type="checkbox" label="Board" />
-          <Form.Check type="checkbox" label="Camp" />
-          <Form.Check type="checkbox" label="Chair" />
-          <Form.Check type="checkbox" label="HH" />
-          <Form.Check type="checkbox" label="Lapsed Team" />
-          <Form.Check type="checkbox" label="Planning Comm" />
-          <Form.Check type="checkbox" label="RC Member/Team" />
-          <Form.Check type="checkbox" label="RC Secured" />
-          <Form.Check type="checkbox" label="Sponsor" />
+          <Form.Check type="checkbox" label="Board" value="Board" />
+          <Form.Check type="checkbox" label="Camp" value="Camp" />
+          <Form.Check type="checkbox" label="Chair" value="Chair" />
+          <Form.Check type="checkbox" label="HH" value="HH" />
+          <Form.Check type="checkbox" label="Lapsed Team" value="Lapsed Team" />
+          <Form.Check
+            type="checkbox"
+            label="Planning Comm"
+            value="Planning Comm"
+          />
+          <Form.Check
+            type="checkbox"
+            label="RC Member/Team"
+            value="RC Member/Team"
+          />
+          <Form.Check type="checkbox" label="RC Secured" value="RC Secured" />
+          <Form.Check type="checkbox" label="Sponsor" value="Sponsor" />
         </Form.Group>
         <Row>
-        <Form.Group as={Col} className="mb-3">
+          <Form.Group as={Col} className="mb-3">
             <Form.Label>Forecast YTD</Form.Label>
-            <InputGroup >
-                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control
-                  type="number"
-                />
-              </InputGroup>
+            <InputGroup>
+              <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+              <Form.Control type="number" />
+            </InputGroup>
           </Form.Group>
         </Row>
         {/* <Form.Group className="mb-3">
@@ -157,13 +180,14 @@ const TeamLevelForm = () => {
         </Form.Group> */}
         <Form.Group className="mb-3">
           <Form.Label>Interaction Note: </Form.Label>
-          <Form.Control type="textarea" />
+          <Form.Control type="textarea" style={{ height: '100px' }}/>
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button className="mb-3" variant="primary" type="submit">
           Submit
         </Button>
       </Form>
-    </>
+      </Card.Body>
+    </Card>
   );
 };
 
