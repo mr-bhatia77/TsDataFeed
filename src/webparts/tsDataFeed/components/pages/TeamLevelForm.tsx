@@ -94,18 +94,18 @@ const TeamLevelForm = () => {
         <Row>
           <Form.Group as={Col} className="mb-3">
             <Form.Label>Team Captain Name:</Form.Label>
-            <Form.Control type="text" />
+            <Form.Control type="text" disabled/>
           </Form.Group>
           <Form.Group as={Col} className="mb-3">
             <Form.Label>Team Co-Captian Name:</Form.Label>
-            <Form.Control type="text" />
+            <Form.Control type="text" disabled />
           </Form.Group>
         </Row>
         <Row>
           <Col xs={6}>
             <Form.Group className="mb-3">
               <Form.Label>No of Team Members Including team Captain</Form.Label>
-              <Form.Control type="number" />
+              <Form.Control type="number" disabled/>
             </Form.Group>
           </Col>
         </Row>
@@ -114,14 +114,14 @@ const TeamLevelForm = () => {
             <Form.Label>Team Fundraising Goal:</Form.Label>
             <InputGroup>
               <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-              <Form.Control type="number" />
+              <Form.Control type="number" step={0.01} disabled />
             </InputGroup>
           </Form.Group>
           <Form.Group as={Col} className="mb-3">
             <Form.Label>Team Actual YTD</Form.Label>
             <InputGroup>
               <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-              <Form.Control type="number" />
+              <Form.Control type="number" step={0.01} disabled />
             </InputGroup>
           </Form.Group>
         </Row>
@@ -164,7 +164,7 @@ const TeamLevelForm = () => {
             <Form.Label>Forecast YTD</Form.Label>
             <InputGroup>
               <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-              <Form.Control type="number" />
+              <Form.Control type="number" step={0.01}/>
             </InputGroup>
           </Form.Group>
         </Row>

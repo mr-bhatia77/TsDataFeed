@@ -88,7 +88,7 @@ const EventLevelForm = () => {
               <Form.Label>Overall IND/Other Rev YTD Forecast:</Form.Label>
               <InputGroup>
                 <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control type="number" />
+                <Form.Control type="number" step={0.01} />
               </InputGroup>
               <Form.Text className="text-muted">
                 Last modified - 21-12-2022
@@ -98,7 +98,7 @@ const EventLevelForm = () => {
               <Form.Label>Overall Team YTD Forecast:</Form.Label>
               <InputGroup>
                 <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control type="number" />
+                <Form.Control type="number" step={0.01} />
               </InputGroup>
               <Form.Text className="text-muted">
                 Last modified - 21-12-2022

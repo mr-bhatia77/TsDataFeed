@@ -25,14 +25,12 @@ export default class TsDataFeed extends React.Component<ITsDataFeedProps, {}> {
           Welcome, {escape(userDisplayName)}!
         </h5>
         &nbsp;&nbsp;({escape(userEmail)})
-        <div className="container">
           <div className="mt-3">
             <EventLevelForm />
           </div>
           <div className="mt-3">
             <TeamLevelForm />
           </div>
-        </div>
       </Container>
     );
   }
