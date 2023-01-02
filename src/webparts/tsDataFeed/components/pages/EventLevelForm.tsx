@@ -1,20 +1,35 @@
 import * as React from "react";
-import {useEffect} from "react";
+import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
-import AxiosInstance from "../../services/AxiosInstance";
+// import AxiosInstance from "../../services/AxiosInstance";
+import { eventDetailsConstant } from "../../services/constants";
 
 const EventLevelForm = () => {
+  const chapterOptions = [
+    <option value="Select Chapter">Select Chapter</option>,
+    <option value="Central Texas">Central Texas</option>,
+    <option value="Chapter 2">Chapter 2</option>,
+    <option value="Chapter 3">Chapter 3</option>,
+    <option value="Chapter 4">Chapter 4</option>,
+  ];
 
-  useEffect(()=>{
-    AxiosInstance.get('/posts').then((res)=>{
-      console.log(res)
-    })
-  },[])
+  const [eventDetails, setEventDetails] = useState(null);
+  const [eventOptions, setEventOptions] = useState([
+    <option value="Select Event">Select Event</option>,
+  ]);
+  // const [campaignYtdForecast, campaignYtdForecast] = useState(null);
+
+  useEffect(() => {
+    // AxiosInstance.get("/posts").then((res) => {
+    //   console.log(res);
+    //   // call Chapter List API
+    // });
+  }, []);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -24,14 +39,38 @@ const EventLevelForm = () => {
       event: e.target[1].value,
       overall_ind_forecast: e.target[2].value,
       overall_team_forecast: e.target[3].value,
+      forecast_info: e.target[5].value,
     };
     console.log("payload = ", payload);
+  };
+
+  const chapterSelectHandler = (e: any) => {
+    console.log(e.target.value);
+    //call event list API
+    setEventOptions([
+      <option value="Select Event">Select Event</option>,
+      <option value="544">CTX 2023 TAKE STEPS WALK AUSTIN</option>,
+    ]);
+  };
+
+  const eventSelectHandler = (e: any) => {
+    //call event details API
+
+    // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
+    //   console.log(res);
+    // })
+    setEventDetails(eventDetailsConstant);
+  };
+
+  const changeInputHandler = (e: any) => {
+    console.log(e.target.id);
+    setEventDetails({ ...eventDetails, [e.target.id]: e.target.value });
   };
 
   return (
     <Card>
       <Card.Header>
-        <h3>Event Level</h3>
+        <h3>Event Details</h3>
       </Card.Header>
       <Card.Body>
         <Form onSubmit={submitHandler}>
@@ -39,11 +78,8 @@ const EventLevelForm = () => {
             <Col xs={6}>
               <Form.Group as={Col} className="mb-3">
                 <Form.Label>Chapter: </Form.Label>
-                <Form.Select>
-                  <option value="Chapter 1">Chapter 1</option>
-                  <option value="Chapter 2">Chapter 2</option>
-                  <option value="Chapter 3">Chapter 3</option>
-                  <option value="Chapter 4">Chapter 4</option>
+                <Form.Select onChange={chapterSelectHandler}>
+                  {chapterOptions}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -51,44 +87,23 @@ const EventLevelForm = () => {
           <Row>
             <Form.Group as={Col} className="mb-3">
               <Form.Label>Event Name: </Form.Label>
-              <Form.Select>
-                <option value="Event 1">Event 1</option>
-                <option value="Event 2">Event 2</option>
-                <option value="Event 3">Event 3</option>
-                <option value="Event 4">Event 4</option>
+              <Form.Select onChange={eventSelectHandler}>
+                {eventOptions}
               </Form.Select>
             </Form.Group>
-            {/* <Form.Group as={Col} className="mb-3">
-              <Form.Label>Event Id: </Form.Label>
-              <Form.Select>
-                <option value="Id:Event 1">Id:Event 1</option>
-                <option value="Id:Event 2">Id:Event 2</option>
-                <option value="Id:Event 3">Id:Event 3</option>
-                <option value="Id:Event 4">Id:Event 4</option>
-              </Form.Select>
-            </Form.Group> */}
           </Row>
-          {/* <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>National Manager</Form.Label>
-          <Form.Control type="text" placeholder="Enter Name" />
-        </Form.Group> */}
-
-          {/* <Row>
-          <Form.Group as={Col} className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Season</Form.Label>
-            <Form.Control type="text" placeholder="season" />
-          </Form.Group>
-          <Form.Group as={Col} className="mb-3">
-            <Form.Label>Honored hero</Form.Label>
-            <Form.Control type="text" placeholder="Honored hero" />
-          </Form.Group>
-        </Row> */}
           <Row>
             <Form.Group as={Col} className="mb-3">
               <Form.Label>Overall IND/Other Rev YTD Forecast:</Form.Label>
               <InputGroup>
-                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control type="number" step={0.01} />
+                <InputGroup.Text>$</InputGroup.Text>
+                <Form.Control
+                  id="overall_ind_forecast"
+                  type="number"
+                  step={0.01}
+                  value={eventDetails?.overall_ind_forecast}
+                  onChange={changeInputHandler}
+                />
               </InputGroup>
               <Form.Text className="text-muted">
                 Last modified - 21-12-2022
@@ -98,7 +113,13 @@ const EventLevelForm = () => {
               <Form.Label>Overall Team YTD Forecast:</Form.Label>
               <InputGroup>
                 <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control type="number" step={0.01} />
+                <Form.Control
+                  id="overall_team_forecast"
+                  type="number"
+                  step={0.01}
+                  value={eventDetails?.overall_team_forecast}
+                  onChange={changeInputHandler}
+                />
               </InputGroup>
               <Form.Text className="text-muted">
                 Last modified - 21-12-2022
@@ -111,7 +132,15 @@ const EventLevelForm = () => {
                 <Form.Label>Campaign YTD forecast:</Form.Label>
                 <InputGroup>
                   <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                  <Form.Control type="number" disabled />
+                  <Form.Control
+                    type="number"
+                    value={
+                      Math.round((Number(eventDetails?.overall_ind_forecast) +
+                      Number(eventDetails?.overall_team_forecast) +
+                      Number(eventDetails?.sponsorshipForecast)) * 100) / 100
+                    }
+                    disabled
+                  />
                 </InputGroup>
               </Form.Group>
             </Col>
@@ -120,7 +149,7 @@ const EventLevelForm = () => {
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>Forecast Info:</Form.Label>
-                <Form.Control type="textarea" style={{ height: "100px" }} />
+                <Form.Control as="textarea" id="forecast_info" style={{ height: "100px" }} value={eventDetails?.forecast_info} onChange={changeInputHandler}/>
               </Form.Group>
             </Col>
           </Row>

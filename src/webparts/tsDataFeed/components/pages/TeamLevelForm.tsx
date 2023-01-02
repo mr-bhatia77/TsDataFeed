@@ -30,7 +30,7 @@ const TeamLevelForm = () => {
 
   return (
     <Card>
-      <Card.Header><h3>Team Level</h3></Card.Header>
+      <Card.Header><h3>Team Details</h3></Card.Header>
       <Card.Body>
       <Form onSubmit={submitHandler}>
         <Row>
