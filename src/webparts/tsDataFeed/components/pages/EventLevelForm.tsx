@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FunctionComponent } from "react";
+import { useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -7,20 +8,23 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 // import AxiosInstance from "../../services/AxiosInstance";
-import { eventDetailsConstant } from "../../services/constants";
+import { eventDetailsConstant,chapterList,eventList } from "../../services/constants";
+import { updateSelectedEvent,updateEventList } from "../../redux/application/applicationActions";
+import {chapterOptionsMaker,eventOptionsMaker} from '../../services/commonFunctions';
+interface IEventLevelForm {
+  userName: string;
+  userEmail: string;
+}
 
-const EventLevelForm = () => {
-  const chapterOptions = [
-    <option value="Select Chapter">Select Chapter</option>,
-    <option value="Central Texas">Central Texas</option>,
-    <option value="Chapter 2">Chapter 2</option>,
-    <option value="Chapter 3">Chapter 3</option>,
-    <option value="Chapter 4">Chapter 4</option>,
-  ];
+const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
+  const dispatch = useDispatch();
 
   const [eventDetails, setEventDetails] = useState(null);
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event">Select Event</option>,
+  ]);
+  const [chapterOptions, setChapterOptions] = useState([
+    <option value="Select Chapter">Select Chapter</option>,
   ]);
   // const [campaignYtdForecast, campaignYtdForecast] = useState(null);
 
@@ -29,37 +33,38 @@ const EventLevelForm = () => {
     //   console.log(res);
     //   // call Chapter List API
     // });
+    setChapterOptions(chapterOptionsMaker(chapterList));
   }, []);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     // console.log(e);
-    const payload = {
+    const payload = JSON.stringify({
       chapter: e.target[0].value,
       event: e.target[1].value,
       overall_ind_forecast: e.target[2].value,
       overall_team_forecast: e.target[3].value,
       forecast_info: e.target[5].value,
-    };
+    });
     console.log("payload = ", payload);
   };
 
   const chapterSelectHandler = (e: any) => {
-    console.log(e.target.value);
-    //call event list API
-    setEventOptions([
-      <option value="Select Event">Select Event</option>,
-      <option value="544">CTX 2023 TAKE STEPS WALK AUSTIN</option>,
-    ]);
+    // console.log(e.target.value);
+    // call event list API
+    setEventOptions(eventOptionsMaker(eventList));
+    dispatch(updateEventList(eventList));
   };
 
   const eventSelectHandler = (e: any) => {
-    //call event details API
 
+    //call event details API
     // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
     //   console.log(res);
     // })
+
     setEventDetails(eventDetailsConstant);
+    dispatch(updateSelectedEvent(eventDetailsConstant));
   };
 
   const changeInputHandler = (e: any) => {
@@ -135,9 +140,12 @@ const EventLevelForm = () => {
                   <Form.Control
                     type="number"
                     value={
-                      Math.round((Number(eventDetails?.overall_ind_forecast) +
-                      Number(eventDetails?.overall_team_forecast) +
-                      Number(eventDetails?.sponsorshipForecast)) * 100) / 100
+                      Math.round(
+                        (Number(eventDetails?.overall_ind_forecast) +
+                          Number(eventDetails?.overall_team_forecast) +
+                          Number(eventDetails?.sponsorshipForecast)) *
+                          100
+                      ) / 100
                     }
                     disabled
                   />
@@ -149,7 +157,13 @@ const EventLevelForm = () => {
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>Forecast Info:</Form.Label>
-                <Form.Control as="textarea" id="forecast_info" style={{ height: "100px" }} value={eventDetails?.forecast_info} onChange={changeInputHandler}/>
+                <Form.Control
+                  as="textarea"
+                  id="forecast_info"
+                  style={{ height: "100px" }}
+                  value={eventDetails?.forecast_info}
+                  onChange={changeInputHandler}
+                />
               </Form.Group>
             </Col>
           </Row>

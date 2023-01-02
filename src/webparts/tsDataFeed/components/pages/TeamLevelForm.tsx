@@ -1,12 +1,26 @@
 import * as React from "react";
+import {FunctionComponent} from 'react';
+import {useSelector} from 'react-redux';
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
+import {eventOptionsMaker,teamOptionsMaker} from '../../services/commonFunctions';
 
-const TeamLevelForm = () => {
+
+interface IEventLevelForm {
+  userName:string,
+  userEmail:string,
+}
+
+const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
+
+  const eventList = useSelector((state:any)=>state?.application?.eventList);
+  const eventDetails = useSelector((state:any)=>state?.application?.event);
+  console.log(eventDetails);
+
   const submitHandler = (e: any) => {
     e.preventDefault();
     const getAssociationList = () => {
@@ -38,10 +52,7 @@ const TeamLevelForm = () => {
             <Form.Group className="mb-3">
               <Form.Label>Event Name: </Form.Label>
               <Form.Select>
-                <option value="Event 1">Event 1</option>
-                <option value="Event 2">Event 2</option>
-                <option value="Event 3">Event 3</option>
-                <option value="Event 4">Event 4</option>
+                {eventOptionsMaker(eventList,eventDetails?.eventId)}
               </Form.Select>
             </Form.Group>
           </Col>
@@ -51,10 +62,7 @@ const TeamLevelForm = () => {
             <Form.Group className="mb-3">
               <Form.Label>Team Name: </Form.Label>
               <Form.Select>
-                <option value="Team 1">Team 1</option>
-                <option value="Team 2">Team 2</option>
-                <option value="Team 3">Team 3</option>
-                <option value="Team 4">Team 4</option>
+                {teamOptionsMaker(eventDetails?.teamEntityList)}
               </Form.Select>
             </Form.Group>
           </Col>
