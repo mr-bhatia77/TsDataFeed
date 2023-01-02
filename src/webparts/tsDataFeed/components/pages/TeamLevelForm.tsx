@@ -19,7 +19,7 @@ const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventList = useSelector((state:any)=>state?.application?.eventList);
   const eventDetails = useSelector((state:any)=>state?.application?.event);
-  console.log(eventDetails);
+  // console.log(eventDetails);
 
   const submitHandler = (e: any) => {
     e.preventDefault();

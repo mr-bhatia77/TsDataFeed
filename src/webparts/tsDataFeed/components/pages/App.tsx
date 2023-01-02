@@ -1,11 +1,12 @@
 import * as React from "react";
-import { useState, FunctionComponent} from "react";
+import { useState, FunctionComponent } from "react";
 import { escape } from "@microsoft/sp-lodash-subset";
 import Container from "react-bootstrap/Container";
 import EventLevelForm from "./EventLevelForm";
 import TeamLevelForm from "./TeamLevelForm";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import AxiosInstance from "../../services/AxiosInstance";
 
 interface IApp {
   userDisplayName: string;
@@ -13,9 +14,22 @@ interface IApp {
 }
 
 const App: FunctionComponent<IApp> = (props) => {
-
   const { userDisplayName, userEmail } = props;
-  const [key, setKey] = useState("event");  
+  const [key, setKey] = useState("event");
+  const [apiResState, setApiResState] = useState("");
+
+  const apiHandler = () => {
+    setApiResState("Loading");
+    AxiosInstance.get("/event/544/fetchData")
+      .then((res) => {
+        console.log("response from api", res);
+        setApiResState("Success! check console");
+      })
+      .catch((error) => {
+        setApiResState("Failure! check console");
+        console.log("error from API", error);
+      });
+  };
 
   return (
     <Container className="mt-3">
@@ -23,6 +37,11 @@ const App: FunctionComponent<IApp> = (props) => {
         Welcome, {escape(userDisplayName)}!
       </h5>
       &nbsp;&nbsp;({escape(userEmail)})
+      <br/>
+      <div className="mt-3">
+      <button onClick={apiHandler}>click here for api response</button>
+      {apiResState}
+      </div>
       <Tabs
         id="controlled-tab-example"
         activeKey={key}
@@ -36,7 +55,7 @@ const App: FunctionComponent<IApp> = (props) => {
         </Tab>
         <Tab eventKey="team" title="Team">
           <div className="mt-3">
-            <TeamLevelForm userName={userDisplayName} userEmail={userEmail}/>
+            <TeamLevelForm userName={userDisplayName} userEmail={userEmail} />
           </div>
         </Tab>
         <Tab eventKey="dataView" title="Data view">
