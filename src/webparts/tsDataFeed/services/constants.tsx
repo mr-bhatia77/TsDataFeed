@@ -24,8 +24,8 @@ export const eventList = [
 ];
 
 export const eventDetailsConstant = {
-  eventId: 544,
-  eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
+  eventId: 546,
+  eventName: "ZTY 2023 ADMIN USA",
   chapter: "Central Texas Chapter",
   overall_ind_forecast: 20000.2,
   overall_team_forecast: 10000.23,
@@ -56,12 +56,21 @@ export const eventDetailsConstant = {
   ],
 };
 
-export const teamDetailsConstant = {
-  teamId: 5029,
-  eventId: 544,
-  eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
-  teamName: "Test Team Deborah",
-  teamCaptainName: "Test - DeborahTest - Adams",
-  numberTeamMemberIncludingCaptain: 1,
-  teamFundraisingGoal: 100000.0,
+export const teamDetailsConstant:{ [key: string]: any } = {
+    teamId: 5029,
+    eventId: 544,
+    eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
+    teamName: "Test Team Deborah",
+    teamCaptainName: "Test - DeborahTest - Adams",
+    teamCoCaptain: "BB",
+    numberTeamMemberIncludingCaptain: 1,
+    teamFundraisingGoal: 100000.0,
+    // teamPriorityRating: "C",
+    teamAssociation: "Board;Chair",
+    teamForecastYTD: null,
+    leadStaffName: null,
+    interactionNote: null,
+    createdDate: "2022-12-29T11:27:30.470+00:00",
+    lastModifiedDate: null,
+    lastModifiedBy: null
 };
