@@ -65,7 +65,6 @@ const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
     // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
     //   console.log(res);
     // })
-
     // dispatch(updateSelectedEvent(eventDetailsConstant));
     setTeamDetails(teamDetailsConstant);
   };

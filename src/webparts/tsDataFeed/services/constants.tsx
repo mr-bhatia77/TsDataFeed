@@ -1,13 +1,13 @@
 export const chapterList = [
-    {
-        chapterId:1,
-        chapterName:'Central Texas'
-    },
-    {
-        chapterId:2,
-        chapterName:'Texas Central'
-    }
-]
+  {
+    chapterId: 1,
+    chapterName: "Central Texas",
+  },
+  {
+    chapterId: 2,
+    chapterName: "Texas Central",
+  },
+];
 export const eventList = [
   {
     eventId: 544,
@@ -27,7 +27,7 @@ export const eventDetailsConstant = {
   eventId: 546,
   eventName: "ZTY 2023 ADMIN USA",
   chapter: "Central Texas Chapter",
-  overall_ind_forecast: 20000.2,
+  overall_ind_forecast: 100203.33,
   overall_team_forecast: 10000.23,
   sponsorshipForecast: 45000.0,
   forecast_info:
@@ -56,21 +56,33 @@ export const eventDetailsConstant = {
   ],
 };
 
-export const teamDetailsConstant:{ [key: string]: any } = {
-    teamId: 5029,
-    eventId: 544,
-    eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
-    teamName: "Test Team Deborah",
-    teamCaptainName: "Test - DeborahTest - Adams",
-    teamCoCaptain: "BB",
-    numberTeamMemberIncludingCaptain: 1,
-    teamFundraisingGoal: 100000.0,
-    // teamPriorityRating: "C",
-    teamAssociation: "Board;Chair",
-    teamForecastYTD: null,
-    leadStaffName: null,
-    interactionNote: null,
-    createdDate: "2022-12-29T11:27:30.470+00:00",
-    lastModifiedDate: null,
-    lastModifiedBy: null
+export const teamDetailsConstant: { [key: string]: any } = {
+  teamId: 5029,
+  eventId: 544,
+  eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
+  teamName: "Test Team Deborah",
+  teamCaptainName: "Test - DeborahTest - Adams",
+  teamCoCaptain: "BB",
+  numberTeamMemberIncludingCaptain: 1,
+  teamFundraisingGoal: 100203.33,
+  // teamPriorityRating: "C",
+  teamAssociation: "Board;Chair;Lapsed Team;RC Member/Team",
+  teamForecastYTD: null,
+  leadStaffName: null,
+  interactionNote: null,
+  createdDate: "2022-12-29T11:27:30.470+00:00",
+  lastModifiedDate: null,
+  lastModifiedBy: null,
 };
+
+export const teamAssociationCheckList: string[] = [
+  "Board",
+  "Camp",
+  "Chair",
+  "HH",
+  "Lapsed Team",
+  "Planning Comm",
+  "RC Member/Team",
+  "RC Secured",
+  "Sponsor",
+];

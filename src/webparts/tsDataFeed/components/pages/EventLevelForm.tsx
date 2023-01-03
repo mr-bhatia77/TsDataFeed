@@ -8,9 +8,19 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 // import AxiosInstance from "../../services/AxiosInstance";
-import { eventDetailsConstant,chapterList,eventList } from "../../services/constants";
-import { updateSelectedEvent,updateEventList } from "../../redux/application/applicationActions";
-import {chapterOptionsMaker,eventOptionsMaker} from '../../services/commonFunctions';
+import {
+  eventDetailsConstant,
+  chapterList,
+  eventList,
+} from "../../services/constants";
+import {
+  updateSelectedEvent,
+  updateEventList,
+} from "../../redux/application/applicationActions";
+import {
+  chapterOptionsMaker,
+  eventOptionsMaker,
+} from "../../services/commonFunctions";
 interface IEventLevelForm {
   userName: string;
   userEmail: string;
@@ -26,13 +36,13 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const [chapterOptions, setChapterOptions] = useState([
     <option value="Select Chapter">Select Chapter</option>,
   ]);
-  // const [campaignYtdForecast, campaignYtdForecast] = useState(null);
 
   useEffect(() => {
     // AxiosInstance.get("/posts").then((res) => {
     //   console.log(res);
     //   // call Chapter List API
     // });
+    console.log(new Intl.NumberFormat("en-US").format(100203.33));
     setChapterOptions(chapterOptionsMaker(chapterList));
   }, []);
 
@@ -57,7 +67,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const eventSelectHandler = (e: any) => {
-
     //call event details API
     // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
     //   console.log(res);
@@ -98,43 +107,90 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             </Form.Group>
           </Row>
           <Row>
-            <Form.Group as={Col} className="mb-3">
-              <Form.Label>Overall IND/Other Rev YTD Forecast:</Form.Label>
-              <InputGroup>
-                <InputGroup.Text>$</InputGroup.Text>
-                <Form.Control
-                  id="overall_ind_forecast"
-                  type="number"
-                  step={0.01}
-                  value={eventDetails?.overall_ind_forecast}
-                  onChange={changeInputHandler}
-                />
-              </InputGroup>
-              <Form.Text className="text-muted">
-                Last modified - 21-12-2022
-              </Form.Text>
-            </Form.Group>
-            <Form.Group as={Col} className="mb-3">
-              <Form.Label>Overall Team YTD Forecast:</Form.Label>
-              <InputGroup>
-                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control
-                  id="overall_team_forecast"
-                  type="number"
-                  step={0.01}
-                  value={eventDetails?.overall_team_forecast}
-                  onChange={changeInputHandler}
-                />
-              </InputGroup>
-              <Form.Text className="text-muted">
-                Last modified - 21-12-2022
-              </Form.Text>
-            </Form.Group>
+            <Col xs={9}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  Overall IND/Other Rev YTD Forecast:
+                  {eventDetails?.overall_ind_forecast && (
+                    <h6 className="displayInline">
+                      &nbsp;
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(eventDetails?.overall_ind_forecast)}
+                    </h6>
+                  )}
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>$</InputGroup.Text>
+                  <Form.Control
+                    id="overall_ind_forecast"
+                    type="number"
+                    step={0.01}
+                    value={eventDetails?.overall_ind_forecast}
+                    onChange={changeInputHandler}
+                  />
+                </InputGroup>
+                <Form.Text className="text-muted">
+                  Last modified - 21-12-2022
+                </Form.Text>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={9}>
+              <Form.Group as={Col} className="mb-3">
+                <Form.Label>
+                  Overall Team YTD Forecast:
+                  {eventDetails?.overall_team_forecast && (
+                    <h6 className="displayInline">
+                      &nbsp;
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(eventDetails?.overall_team_forecast)}
+                    </h6>
+                  )}
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                  <Form.Control
+                    id="overall_team_forecast"
+                    type="number"
+                    step={0.01}
+                    value={eventDetails?.overall_team_forecast}
+                    onChange={changeInputHandler}
+                  />
+                </InputGroup>
+                <Form.Text className="text-muted">
+                  Last modified - 21-12-2022
+                </Form.Text>
+              </Form.Group>
+            </Col>
           </Row>
           <Row>
             <Col xs={9}>
               <Form.Group className="mb-3">
-                <Form.Label>Campaign YTD forecast:</Form.Label>
+                <Form.Label>
+                  Campaign YTD forecast:
+                  {eventDetails?.overall_team_forecast &&
+                    eventDetails?.overall_team_forecast && (
+                      <h6 className="displayInline">
+                        &nbsp;
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(
+                          Math.round(
+                            (Number(eventDetails?.overall_ind_forecast) +
+                              Number(eventDetails?.overall_team_forecast) +
+                              Number(eventDetails?.sponsorshipForecast)) *
+                              100
+                          ) / 100
+                        )}
+                      </h6>
+                    )}
+                </Form.Label>
                 <InputGroup>
                   <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
                   <Form.Control

@@ -1,5 +1,6 @@
 import * as React from "react";
 import Form from "react-bootstrap/Form";
+import {teamAssociationCheckList} from './constants';
 
 export const chapterOptionsMaker = (itemList: any[]) => {
   const chapterOptions: any[] = [
@@ -65,25 +66,9 @@ export const getTeamAssociationCheckbox = (teamAssociation?: string)=>{
         teamAssociationHashMap[teamAssociation]=1;
     })
     console.log(teamAssociationHashMap);
-    const teamAssociationCheckboxes: any[] = [
-        <Form.Check type="checkbox" label="Board" value="Board" />,
-          <Form.Check type="checkbox" label="Camp" value="Camp" />,
-          <Form.Check type="checkbox" label="Chair" value="Chair" />,
-          <Form.Check type="checkbox" label="HH" value="HH" />,
-          <Form.Check type="checkbox" label="Lapsed Team" value="Lapsed Team" />,
-          <Form.Check
-            type="checkbox"
-            label="Planning Comm"
-            value="Planning Comm"
-          />,
-          <Form.Check
-            type="checkbox"
-            label="RC Member/Team"
-            value="RC Member/Team"
-          />,
-          <Form.Check type="checkbox" label="RC Secured" value="RC Secured" />,
-          <Form.Check type="checkbox" label="Sponsor" value="Sponsor" />
-    ]
+    const teamAssociationCheckboxes: any[] = teamAssociationCheckList.map((item:string)=>{
+        return <Form.Check type="checkbox" label={item} value={item} checked={teamAssociationHashMap[item] == 1}/>
+    })
 
     return teamAssociationCheckboxes;
 }
