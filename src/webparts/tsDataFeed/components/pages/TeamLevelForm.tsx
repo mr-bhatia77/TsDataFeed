@@ -1,6 +1,5 @@
 import * as React from "react";
-import {FunctionComponent,useState} from 'react';
-import {useSelector,useDispatch} from 'react-redux';
+import {FunctionComponent,useState,useEffect} from 'react';
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -8,8 +7,7 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import {eventOptionsMaker,teamOptionsMaker,priorityOptionsMaker,getTeamAssociationCheckbox} from '../../services/commonFunctions';
-import { eventDetailsConstant,teamDetailsConstant } from "../../services/constants";
-import { updateSelectedEvent} from "../../redux/application/applicationActions";
+import { eventList,eventDetailsConstant,teamDetailsConstant } from "../../services/constants";
 
 
 interface IEventLevelForm {
@@ -19,14 +17,18 @@ interface IEventLevelForm {
 
 const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
 
-  const eventList = useSelector((state:any)=>state?.application?.eventList);
-  const eventDetails = useSelector((state:any)=>state?.application?.event);
-
+  const [eventDetails, setEventDetails] = useState(null);
+  const [eventOptions, setEventOptions] = useState([
+    <option value="Select Event">Select Event</option>,
+  ]);
   const [teamDetails,setTeamDetails]=useState<any>(null);
 
-  const dispatch=useDispatch();
   // console.log(eventDetails);
 
+  useEffect(() => {
+    setEventOptions(eventOptionsMaker(eventList));
+  }, [])
+  
   const submitHandler = (e: any) => {
     e.preventDefault();
 
@@ -51,12 +53,11 @@ const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
 
-    //call event details API
+    //call team list from event API
     // AxiosInstance.get(`/event/${e.target.value}/fetchData`).then((res)=>{
     //   console.log(res);
     // })
-
-    dispatch(updateSelectedEvent(eventDetailsConstant));
+    setEventDetails(eventDetailsConstant);
   };
 
   const teamSelectHandler = (e:any) => {
@@ -65,7 +66,6 @@ const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
     // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
     //   console.log(res);
     // })
-    // dispatch(updateSelectedEvent(eventDetailsConstant));
     setTeamDetails(teamDetailsConstant);
   };
 
@@ -79,7 +79,7 @@ const TeamLevelForm:FunctionComponent<IEventLevelForm> = (props) => {
             <Form.Group className="mb-3">
               <Form.Label>Event Name: </Form.Label>
               <Form.Select onChange={eventSelectHandler}>
-                {eventOptionsMaker(eventList,eventDetails?.eventId)}
+              {eventOptions}
               </Form.Select>
             </Form.Group>
           </Col>

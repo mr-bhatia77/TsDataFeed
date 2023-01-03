@@ -18,7 +18,6 @@ export const chapterOptionsMaker = (itemList: any[]) => {
 
 export const eventOptionsMaker = (
   itemList: any[],
-  selectedEventId?: number
 ) => {
   const eventOptions: any[] = [
     <option value="Select Event">Select Event</option>,
@@ -28,7 +27,6 @@ export const eventOptionsMaker = (
       eventOptions.push(
         <option
           value={item.eventId}
-          selected={item?.eventId == selectedEventId}
         >
           {item.eventName}
         </option>

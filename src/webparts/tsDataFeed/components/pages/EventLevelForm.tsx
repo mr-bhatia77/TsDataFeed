@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState, useEffect, FunctionComponent } from "react";
-import { useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -14,10 +13,6 @@ import {
   eventList,
 } from "../../services/constants";
 import {
-  updateSelectedEvent,
-  updateEventList,
-} from "../../redux/application/applicationActions";
-import {
   chapterOptionsMaker,
   eventOptionsMaker,
 } from "../../services/commonFunctions";
@@ -27,7 +22,6 @@ interface IEventLevelForm {
 }
 
 const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
-  const dispatch = useDispatch();
 
   const [eventDetails, setEventDetails] = useState(null);
   const [eventOptions, setEventOptions] = useState([
@@ -63,7 +57,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     // console.log(e.target.value);
     // call event list API
     setEventOptions(eventOptionsMaker(eventList));
-    dispatch(updateEventList(eventList));
   };
 
   const eventSelectHandler = (e: any) => {
@@ -73,7 +66,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     // })
 
     setEventDetails(eventDetailsConstant);
-    dispatch(updateSelectedEvent(eventDetailsConstant));
   };
 
   const changeInputHandler = (e: any) => {
