@@ -22,7 +22,6 @@ interface IEventLevelForm {
 }
 
 const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
-
   const [eventDetails, setEventDetails] = useState(null);
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event">Select Event</option>,
@@ -165,35 +164,26 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>
                   Campaign YTD forecast:
-                  {eventDetails?.overall_team_forecast &&
-                    eventDetails?.overall_team_forecast && (
-                      <h6 className="displayInline">
-                        &nbsp;
-                        {new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        }).format(
-                          Math.round(
-                            (Number(eventDetails?.overall_ind_forecast) +
-                              Number(eventDetails?.overall_team_forecast) +
-                              Number(eventDetails?.sponsorshipForecast)) *
-                              100
-                          ) / 100
-                        )}
-                      </h6>
-                    )}
                 </Form.Label>
                 <InputGroup>
                   <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
                   <Form.Control
-                    type="number"
+                    type="text"
                     value={
-                      Math.round(
-                        (Number(eventDetails?.overall_ind_forecast) +
-                          Number(eventDetails?.overall_team_forecast) +
-                          Number(eventDetails?.sponsorshipForecast)) *
-                          100
-                      ) / 100
+                      eventDetails?.overall_team_forecast &&
+                      eventDetails?.overall_team_forecast
+                        ? new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          }).format(
+                            Math.round(
+                              (Number(eventDetails?.overall_ind_forecast) +
+                                Number(eventDetails?.overall_team_forecast) +
+                                Number(eventDetails?.sponsorshipForecast)) *
+                                100
+                            ) / 100
+                          )
+                        : ""
                     }
                     disabled
                   />
