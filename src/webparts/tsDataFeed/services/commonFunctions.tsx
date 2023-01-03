@@ -2,14 +2,14 @@ import * as React from "react";
 import Form from "react-bootstrap/Form";
 import {teamAssociationCheckList} from './constants';
 
-export const chapterOptionsMaker = (itemList: any[]) => {
+export const chapterOptionsMaker = (itemList: string[]) => {
   const chapterOptions: any[] = [
     <option value="Select Chapter">Select Chapter</option>,
   ];
-  if (itemList?.length && itemList) {
+  if (itemList?.length) {
     itemList.forEach((item: any) => {
       chapterOptions.push(
-        <option value={item.chapterId}>{item.chapterName}</option>
+        <option value={item}>{item}</option>
       );
     });
   }

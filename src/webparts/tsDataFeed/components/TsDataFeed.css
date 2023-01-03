@@ -1,3 +1,10 @@
 .displayInline {
     display: inline-block;
 }
+
+.roundedBorder {
+    border: solid 1px green;
+    border-radius: 50%;
+    padding:0px 5px;
+    color:green
+}

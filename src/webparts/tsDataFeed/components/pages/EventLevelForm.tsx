@@ -6,7 +6,9 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
-// import AxiosInstance from "../../services/AxiosInstance";
+import AxiosInstance from "../../services/AxiosInstance";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from 'react-bootstrap/Popover';
 import {
   eventDetailsConstant,
   chapterList,
@@ -31,11 +33,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   ]);
 
   useEffect(() => {
-    // AxiosInstance.get("/posts").then((res) => {
-    //   console.log(res);
-    //   // call Chapter List API
+    // AxiosInstance.get("/meta/chaptersList/fetchData").then((res) => {
+    //   console.log(res?.data);
     // });
-    console.log(new Intl.NumberFormat("en-US").format(100203.33));
     setChapterOptions(chapterOptionsMaker(chapterList));
   }, []);
 
@@ -45,7 +45,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     const payload = JSON.stringify({
       chapter: e.target[0].value,
       event: e.target[1].value,
-      overall_ind_forecast: e.target[2].value,
+      individualOtherForecastYTD: e.target[2].value,
       overall_team_forecast: e.target[3].value,
       forecast_info: e.target[5].value,
     });
@@ -55,14 +55,19 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const chapterSelectHandler = (e: any) => {
     // console.log(e.target.value);
     // call event list API
+    AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`).then(
+      (res) => {
+        console.log(res);
+      }
+    );
     setEventOptions(eventOptionsMaker(eventList));
   };
 
   const eventSelectHandler = (e: any) => {
     //call event details API
-    // AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
-    //   console.log(res);
-    // })
+    AxiosInstance.get(`/event/${e.target.value}/fetchData`).then((res) => {
+      console.log(res);
+    });
 
     setEventDetails(eventDetailsConstant);
   };
@@ -71,6 +76,15 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     console.log(e.target.id);
     setEventDetails({ ...eventDetails, [e.target.id]: e.target.value });
   };
+
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Campaign YTD forecast</Popover.Header>
+      <Popover.Body>
+        Calculated as sum of (Overall IND/Other Rev YTD Forecast + Overall Team YTD Forecast + Sponsorship Forecast)
+      </Popover.Body>
+    </Popover>
+  );
 
   return (
     <Card>
@@ -102,23 +116,23 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Group className="mb-3">
                 <Form.Label>
                   Overall IND/Other Rev YTD Forecast:
-                  {eventDetails?.overall_ind_forecast && (
+                  {eventDetails?.individualOtherForecastYTD && (
                     <h6 className="displayInline">
                       &nbsp;
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",
-                      }).format(eventDetails?.overall_ind_forecast)}
+                      }).format(eventDetails?.individualOtherForecastYTD)}
                     </h6>
                   )}
                 </Form.Label>
                 <InputGroup>
                   <InputGroup.Text>$</InputGroup.Text>
                   <Form.Control
-                    id="overall_ind_forecast"
+                    id="individualOtherForecastYTD"
                     type="number"
                     step={0.01}
-                    value={eventDetails?.overall_ind_forecast}
+                    value={eventDetails?.individualOtherForecastYTD}
                     onChange={changeInputHandler}
                   />
                 </InputGroup>
@@ -163,7 +177,14 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Campaign YTD forecast:
+                  Campaign YTD forecast :&nbsp;&nbsp;
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={popover}
+                  >
+                    <span className="roundedBorder displayInline">i</span>
+                  </OverlayTrigger>
                 </Form.Label>
                 <InputGroup>
                   <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
@@ -177,7 +198,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                             currency: "USD",
                           }).format(
                             Math.round(
-                              (Number(eventDetails?.overall_ind_forecast) +
+                              (Number(
+                                eventDetails?.individualOtherForecastYTD
+                              ) +
                                 Number(eventDetails?.overall_team_forecast) +
                                 Number(eventDetails?.sponsorshipForecast)) *
                                 100
@@ -188,6 +211,15 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     disabled
                   />
                 </InputGroup>
+                {eventDetails?.sponsorshipForecast && (
+                  <Form.Text className="text-muted">
+                    Sponsorship Forecast -{" "}
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(eventDetails?.sponsorshipForecast)}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
           </Row>
