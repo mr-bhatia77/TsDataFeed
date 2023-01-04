@@ -43,11 +43,13 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     e.preventDefault();
     // console.log(e);
     const payload = JSON.stringify({
-      chapter: e.target[0].value,
-      event: e.target[1].value,
-      individualOtherForecastYTD: e.target[2].value,
-      overall_team_forecast: e.target[3].value,
-      forecast_info: e.target[5].value,
+        individualOtherForecastYTD: e.target[2].value,
+        individualOtherModifiedDate: new Date(),
+        overallTeamForecastYTD: null,
+        overallTeamModifiedDate:null,
+        forecastInfo: "Updated again ", 
+        campaignForecastYTD: e.target[4].value
+    
     });
     console.log("payload = ", payload);
   };

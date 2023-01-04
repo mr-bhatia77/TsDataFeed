@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/tsdata'
+    baseURL: 'https://3.216.17.14:8080/tsdata/'
 });
 
 
