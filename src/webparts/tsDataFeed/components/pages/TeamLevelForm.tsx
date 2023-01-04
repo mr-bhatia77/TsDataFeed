@@ -25,8 +25,7 @@ interface IEventLevelForm {
 }
 
 const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
-
-  const {userEmail} = props;
+  const { userEmail } = props;
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event">Select Event</option>,
   ]);
@@ -34,55 +33,62 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const [teamOptions, setTeamOptions] = useState([
     <option value="Select Team">Select Team</option>,
   ]);
-  const [teamDetails, setTeamDetails] = useState<any>(null);
-  const [initialTeamDetails, setInitialTeamDetails] = useState<any>(null);
+  const [teamDetails, setTeamDetails] = useState<any>({});
+  const [initialTeamDetails, setInitialTeamDetails] = useState<any>({});
 
   useEffect(() => {
-    AxiosInstance.get(`/tsdata/meta/allEvents/fetchData`).then((res)=>{
-      setEventOptions(eventOptionsMaker(res.data))
-    }).catch((error)=>{
-      console.log(error)
-      setEventOptions(eventOptionsMaker(eventList));
-    })
+    AxiosInstance.get(`/meta/allEvents/fetchData`)
+      .then((res) => {
+        setEventOptions(eventOptionsMaker(res.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        setEventOptions(eventOptionsMaker(eventList));
+      });
     // console.log("team page rendered");
   }, []);
 
   useEffect(() => {
     setSubmitDisabled(isFormValuesSame());
-  }, [teamDetails]);
+  }, [teamDetails,initialTeamDetails]);
 
   const isFormValuesSame = () => {
     // console.log(initialTeamDetails,'initialTeamDetails');
     // console.log(teamDetails,'currentTeamDetails')
-    if (
-      initialTeamDetails?.teamPriorityRating ===
-        teamDetails?.teamPriorityRating &&
-      initialTeamDetails?.teamAssociation === teamDetails?.teamAssociation &&
-      initialTeamDetails?.teamForecastYTD == teamDetails?.teamForecastYTD &&
-      initialTeamDetails?.interactionNote == teamDetails?.interactionNote
-    ) {
-      return true;
-    } else return false;
+    const matchTheseFields = ['teamPriorityRating','teamAssociation','teamForecastYTD','interactionNote']
+    let count =0;
+    matchTheseFields.forEach((field:string)=>{
+      if(initialTeamDetails[field] === teamDetails[field])
+      count++
+    })
+    // console.log(count)
+    return (count === matchTheseFields.length ? true : false);
   };
+
   const submitHandler = (e: any) => {
     e.preventDefault();
 
-    const payload:{[key:string]:any} = {
+    const payload: { [key: string]: any } = {
       teamPriorityRating: null,
       teamAssociation: null,
       teamForecastYTD: null,
-      interactionNote:null
-  };
-    for( let i in initialTeamDetails) {
-      if(initialTeamDetails[i]!=teamDetails[i]){
-        payload[i]=teamDetails[i];
+      interactionNote: null,
+    };
+    for (let i in initialTeamDetails) {
+      if (initialTeamDetails[i] != teamDetails[i]) {
+        payload[i] = teamDetails[i];
       }
     }
-    AxiosInstance.put(`/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,payload).then((res)=>{
-      console.log("submitted successfully");
-    }).catch((error)=>{
-      console.log(error);
-    })
+    AxiosInstance.put(
+      `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
+      payload
+    )
+      .then((res) => {
+        console.log("submitted successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const changeInputHandler = (e: any) => {
@@ -92,30 +98,34 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call team list from event API
-    AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`).then((res)=>{
-      setTeamOptions(teamOptionsMaker(res.data));
-    }).catch((error)=>{
-      console.log(error);
-      setTeamOptions(teamOptionsMaker(teamList));
-    })
-
+    AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`)
+      .then((res) => {
+        setTeamOptions(teamOptionsMaker(res.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        setTeamOptions(teamOptionsMaker(teamList));
+      });
   };
 
   const teamSelectHandler = (e: any) => {
     //call team details API
-    AxiosInstance.get(`/team/${e.target.value}/fetchData`).then((res)=>{
-      setTeamDetails(res.data);
-      setInitialTeamDetails(teamDetailsConstant);
-    }).catch((error)=>{
-      console.log(error)
-      setTeamDetails(teamDetailsConstant);
-      setInitialTeamDetails(teamDetailsConstant);
-    })
+    AxiosInstance.get(`/team/${e.target.value}/fetchData`)
+      .then((res) => {
+        setTeamDetails(res.data);
+        setInitialTeamDetails(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        setTeamDetails(teamDetailsConstant);
+        setInitialTeamDetails(teamDetailsConstant);
+      });
   };
 
   const getAssociationCheckboxList = (checked: boolean, newValue: string) => {
     const teamAssociationArray: string[] =
-      teamDetails?.teamAssociation?.split(";");
+    
+      (teamDetails?.teamAssociation || '').split(";");
     let newTeamAssociationArray: string[] = [];
     if (checked) {
       teamAssociationArray.push(newValue);
@@ -165,9 +175,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     return teamAssociationCheckboxes;
   };
 
-  const selectPriorityHandler = (e:any)=> {
-    setTeamDetails({...teamDetails,teamPriorityRating:e.target.value})
-  }
+  const selectPriorityHandler = (e: any) => {
+    setTeamDetails({ ...teamDetails, teamPriorityRating: e.target.value });
+  };
 
   return (
     <Card>
@@ -306,7 +316,13 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
           </Row>
           <Form.Group className="mb-3">
             <Form.Label>Interaction Note: </Form.Label>
-            <Form.Control as="textarea" id="interactionNote" style={{ height: "100px" }} value={teamDetails?.interactionNote} onChange={changeInputHandler}/>
+            <Form.Control
+              as="textarea"
+              id="interactionNote"
+              style={{ height: "100px" }}
+              value={teamDetails?.interactionNote}
+              onChange={changeInputHandler}
+            />
           </Form.Group>
           <Button
             className="mb-3"

@@ -16,17 +16,16 @@ export const eventList = [
 ];
 
 export const eventDetailsConstant: { [key: string]: any } = {
-  eventId: 544,
-  eventName: "CTX 2023 TAKE STEPS WALK AUSTIN",
-  chapter: "Central Texas Chapter",
-  individualOtherForecastYTD: 20000.0,
-  campaignForecastYTD: null,
-  sponsorshipForecast: 45000.0,
-  overall_team_forecast: 10000.0,
-  individualOtherModifiedDate: null,
-  otherTeamModifiedDate: null,
-  forecast_info:
-    "Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! Hello this is test! ",
+    "eventId":544,
+    "eventName":"CTX 2023 TAKE STEPS WALK AUSTIN",
+    "chapter":"Central Texas Chapter",
+    "individualOtherForecastYTD":null,
+    "individualOtherModifiedDate":"2023-01-04T10:18:08.762Z",
+    "campaignForecastYTD":null,
+    "sponsorshipForecast":45000.0,
+    "forecastInfo":null,
+    "overallTeamForecastYTD":null,
+    "overallTeamModifiedDate":"2023-01-04T10:18:08.762Z"
 };
 
 export const teamDetailsConstant: { [key: string]: any } = {
@@ -39,7 +38,7 @@ export const teamDetailsConstant: { [key: string]: any } = {
     "numberTeamMemberIncludingCaptain":1,
     "teamFundraisingGoal":100000.0,
     "teamPriorityRating":"1",
-    "teamAssociation":"Board;Chair",
+    "teamAssociation":null,
     "teamForecastYTD":43.34,
     "leadStaffName":null,
     "interactionNote":"Interaction Note",

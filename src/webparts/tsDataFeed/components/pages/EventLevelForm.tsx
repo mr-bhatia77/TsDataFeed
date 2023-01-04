@@ -8,7 +8,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import AxiosInstance from "../../services/AxiosInstance";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Popover from 'react-bootstrap/Popover';
+import Popover from "react-bootstrap/Popover";
 import {
   eventDetailsConstant,
   chapterList,
@@ -24,66 +24,129 @@ interface IEventLevelForm {
 }
 
 const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
-  const [eventDetails, setEventDetails] = useState(null);
+  const {userEmail} = props;
+  const [eventDetails, setEventDetails] = useState<any>({});
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event">Select Event</option>,
   ]);
   const [chapterOptions, setChapterOptions] = useState([
     <option value="Select Chapter">Select Chapter</option>,
   ]);
-
-  useEffect(() => {
-    // AxiosInstance.get("/meta/chaptersList/fetchData").then((res) => {
-    //   console.log(res?.data);
-    // });
-    setChapterOptions(chapterOptionsMaker(chapterList));
-  }, []);
+  const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
+  const [initialEventDetails, setInitialEventDetails] = useState<any>({});
 
   const submitHandler = (e: any) => {
     e.preventDefault();
     // console.log(e);
-    const payload = JSON.stringify({
-        individualOtherForecastYTD: e.target[2].value,
-        individualOtherModifiedDate: new Date(),
-        overallTeamForecastYTD: null,
-        overallTeamModifiedDate:null,
-        forecastInfo: "Updated again ", 
-        campaignForecastYTD: e.target[4].value
-    
-    });
-    console.log("payload = ", payload);
+    const payload: { [key: string]: any } = {
+      individualOtherForecastYTD: null,
+      individualOtherModifiedDate: null,
+      overallTeamForecastYTD: null,
+      overallTeamModifiedDate: null,
+      forecastInfo: null,
+      campaignForecastYTD: null,
+    };
+    const finalCampaignForecastYTD =
+      (Number(eventDetails?.individualOtherForecastYTD) +
+      Number(eventDetails?.overallTeamForecastYTD) +
+      Number(eventDetails?.sponsorshipForecast)).toFixed(2);
+    // console.log(finalCampaignForecastYTD);
+
+    for (let i in initialEventDetails) {
+      if (initialEventDetails[i] != eventDetails[i]) {
+        if (i === "individualOtherForecastYTD") {
+          payload.individualOtherModifiedDate = new Date();
+        }
+        if (i === "overallTeamForecastYTD") {
+          payload.overallTeamModifiedDate = new Date();
+        }
+        payload[i] = eventDetails[i];
+      }
+    }
+    if (initialEventDetails?.campaignForecastYTD !== finalCampaignForecastYTD) {
+      payload.campaignForecastYTD = finalCampaignForecastYTD;
+    }
+    AxiosInstance.put(
+      `/event/UpdateEventDetails/${eventDetails?.eventId}?userName=${userEmail}`,
+      payload
+    )
+      .then((res) => {
+        console.log("submitted successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const chapterSelectHandler = (e: any) => {
-    // console.log(e.target.value);
     // call event list API
-    AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`).then(
-      (res) => {
-        console.log(res);
-      }
-    );
-    setEventOptions(eventOptionsMaker(eventList));
+    AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`)
+      .then((res) => {
+        setEventOptions(eventOptionsMaker(res?.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        setEventOptions(eventOptionsMaker(eventList));
+      });
   };
 
   const eventSelectHandler = (e: any) => {
     //call event details API
-    AxiosInstance.get(`/event/${e.target.value}/fetchData`).then((res) => {
-      console.log(res);
-    });
-
-    setEventDetails(eventDetailsConstant);
+    AxiosInstance.get(`/event/${e.target.value}/fetchData`)
+      .then((res) => {
+        setEventDetails(res?.data);
+        setInitialEventDetails(res?.data);
+      })
+      .catch((error) => {
+        setEventDetails(eventDetailsConstant);
+        setInitialEventDetails(eventDetailsConstant);
+      });
   };
 
   const changeInputHandler = (e: any) => {
-    console.log(e.target.id);
+    // console.log(e.target.id);
     setEventDetails({ ...eventDetails, [e.target.id]: e.target.value });
   };
+
+  const isFormValuesSame = () => {
+    // console.log(initialEventDetails,'initialTeamDetails');
+    // console.log(eventDetails,'currentTeamDetails')
+
+    const matchTheseFields = [
+      "individualOtherForecastYTD",
+      "overallTeamForecastYTD",
+      "forecastInfo",
+      "campaignForecastYTD",
+    ];
+    let count = 0;
+    matchTheseFields.forEach((field: string) => {
+      if (initialEventDetails[field] === eventDetails[field]) count++;
+    });
+    // console.log(count);
+    return count === matchTheseFields.length ? true : false;
+  };
+
+  useEffect(() => {
+    AxiosInstance.get("/meta/chaptersList/fetchData")
+      .then((res) => {
+        setChapterOptions(chapterOptionsMaker(res?.data));
+      })
+      .catch((error) => {
+        console.log(error);
+        setChapterOptions(chapterOptionsMaker(chapterList));
+      });
+  }, []);
+
+  useEffect(() => {
+    setSubmitDisabled(isFormValuesSame());
+  }, [eventDetails, initialEventDetails]);
 
   const popover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Campaign YTD forecast</Popover.Header>
       <Popover.Body>
-        Calculated as sum of (Overall IND/Other Rev YTD Forecast + Overall Team YTD Forecast + Sponsorship Forecast)
+        Calculated as sum of (Overall IND/Other Rev YTD Forecast + Overall Team
+        YTD Forecast + Sponsorship Forecast)
       </Popover.Body>
     </Popover>
   );
@@ -138,9 +201,14 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     onChange={changeInputHandler}
                   />
                 </InputGroup>
-                <Form.Text className="text-muted">
-                  Last modified - 21-12-2022
-                </Form.Text>
+                {eventDetails?.individualOtherModifiedDate && (
+                  <Form.Text className="text-muted">
+                    Last modified -{" "}
+                    {new Date(
+                      eventDetails?.individualOtherModifiedDate
+                    ).toLocaleString("en-IN")}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
           </Row>
@@ -149,29 +217,33 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Group as={Col} className="mb-3">
                 <Form.Label>
                   Overall Team YTD Forecast:
-                  {eventDetails?.overall_team_forecast && (
+                  {eventDetails?.overallTeamForecastYTD && (
                     <h6 className="displayInline">
                       &nbsp;
-                      {new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(eventDetails?.overall_team_forecast)}
+                      {new Intl.NumberFormat("en-US").format(
+                        eventDetails?.overallTeamForecastYTD
+                      )}
                     </h6>
                   )}
                 </Form.Label>
                 <InputGroup>
                   <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
                   <Form.Control
-                    id="overall_team_forecast"
+                    id="overallTeamForecastYTD"
                     type="number"
                     step={0.01}
-                    value={eventDetails?.overall_team_forecast}
+                    value={eventDetails?.overallTeamForecastYTD}
                     onChange={changeInputHandler}
                   />
                 </InputGroup>
-                <Form.Text className="text-muted">
-                  Last modified - 21-12-2022
-                </Form.Text>
+                {eventDetails?.overallTeamModifiedDate && (
+                  <Form.Text className="text-muted">
+                    Last modified -{" "}
+                    {new Date(
+                      eventDetails?.overallTeamModifiedDate
+                    ).toLocaleString("en-IN")}
+                  </Form.Text>
+                )}
               </Form.Group>
             </Col>
           </Row>
@@ -193,8 +265,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   <Form.Control
                     type="text"
                     value={
-                      eventDetails?.overall_team_forecast &&
-                      eventDetails?.overall_team_forecast
+                      eventDetails?.individualOtherForecastYTD ||
+                      eventDetails?.overallTeamForecastYTD ||
+                      eventDetails?.sponsorshipForecast
                         ? new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "USD",
@@ -203,7 +276,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                               (Number(
                                 eventDetails?.individualOtherForecastYTD
                               ) +
-                                Number(eventDetails?.overall_team_forecast) +
+                                Number(eventDetails?.overallTeamForecastYTD) +
                                 Number(eventDetails?.sponsorshipForecast)) *
                                 100
                             ) / 100
@@ -239,7 +312,12 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               </Form.Group>
             </Col>
           </Row>
-          <Button className="mb-3" variant="primary" type="submit">
+          <Button
+            className="mb-3"
+            variant="primary"
+            type="submit"
+            disabled={submitDisabled}
+          >
             Submit
           </Button>
         </Form>
