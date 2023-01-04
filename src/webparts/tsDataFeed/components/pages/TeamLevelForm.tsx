@@ -99,7 +99,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       .then((res) => {
         console.log("submitted successfully");
         setUpdatedSuccessfully(true);
-        AxiosInstance.get(`/team/${e.target.value}/fetchData`)
+        AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
           .then((res) => {
             setTeamDetails(res.data);
             setInitialTeamDetails(res.data);
