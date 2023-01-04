@@ -9,6 +9,7 @@ import Card from "react-bootstrap/Card";
 import AxiosInstance from "../../services/AxiosInstance";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
+import Alert from "react-bootstrap/Alert";
 import {
   eventDetailsConstant,
   chapterList,
@@ -24,7 +25,7 @@ interface IEventLevelForm {
 }
 
 const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
-  const {userEmail} = props;
+  const { userEmail } = props;
   const [eventDetails, setEventDetails] = useState<any>({});
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event">Select Event</option>,
@@ -34,6 +35,8 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   ]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [initialEventDetails, setInitialEventDetails] = useState<any>({});
+  const [updatedSuccessfully, setUpdatedSuccessfully] =
+    useState<boolean>(false);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -46,10 +49,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       forecastInfo: null,
       campaignForecastYTD: null,
     };
-    const finalCampaignForecastYTD =
-      (Number(eventDetails?.individualOtherForecastYTD) +
+    const finalCampaignForecastYTD = (
+      Number(eventDetails?.individualOtherForecastYTD) +
       Number(eventDetails?.overallTeamForecastYTD) +
-      Number(eventDetails?.sponsorshipForecast)).toFixed(2);
+      Number(eventDetails?.sponsorshipForecast)
+    ).toFixed(2);
     // console.log(finalCampaignForecastYTD);
 
     for (let i in initialEventDetails) {
@@ -72,10 +76,21 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     )
       .then((res) => {
         console.log("submitted successfully");
+        setUpdatedSuccessfully(true);
+        AxiosInstance.get(`/event/${eventDetails?.eventId}/fetchData`)
+          .then((res) => {
+            setEventDetails(res?.data);
+            setInitialEventDetails(res?.data);
+          })
+          .catch((error) => {
+            setEventDetails(eventDetailsConstant);
+            setInitialEventDetails(eventDetailsConstant);
+          });
       })
       .catch((error) => {
         console.log(error);
       });
+    console.log(userEmail, payload);
   };
 
   const chapterSelectHandler = (e: any) => {
@@ -109,8 +124,8 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const isFormValuesSame = () => {
-    // console.log(initialEventDetails,'initialTeamDetails');
-    // console.log(eventDetails,'currentTeamDetails')
+    console.log(initialEventDetails, "initialTeamDetails");
+    console.log(eventDetails, "currentTeamDetails");
 
     const matchTheseFields = [
       "individualOtherForecastYTD",
@@ -120,7 +135,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
-      if (initialEventDetails[field] === eventDetails[field]) count++;
+      if (initialEventDetails[field] == eventDetails[field]) count++;
     });
     // console.log(count);
     return count === matchTheseFields.length ? true : false;
@@ -140,6 +155,12 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   useEffect(() => {
     setSubmitDisabled(isFormValuesSame());
   }, [eventDetails, initialEventDetails]);
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      setUpdatedSuccessfully(false);
+    },5000)
+  },[updatedSuccessfully])
 
   const popover = (
     <Popover id="popover-basic">
@@ -321,6 +342,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             Submit
           </Button>
         </Form>
+        {updatedSuccessfully && (
+          <Alert key={"success"} variant={"success"}>
+            Updated Successfully!
+          </Alert>
+        )}
       </Card.Body>
     </Card>
   );

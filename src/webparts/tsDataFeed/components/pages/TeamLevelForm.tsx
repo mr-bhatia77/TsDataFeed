@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
+import Alert from "react-bootstrap/Alert";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
@@ -35,6 +36,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   ]);
   const [teamDetails, setTeamDetails] = useState<any>({});
   const [initialTeamDetails, setInitialTeamDetails] = useState<any>({});
+  const [updatedSuccessfully, setUpdatedSuccessfully] =
+    useState<boolean>(false);
 
   useEffect(() => {
     AxiosInstance.get(`/meta/allEvents/fetchData`)
@@ -49,20 +52,30 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => {
+      setUpdatedSuccessfully(false);
+    }, 5000);
+  }, [updatedSuccessfully]);
+
+  useEffect(() => {
     setSubmitDisabled(isFormValuesSame());
-  }, [teamDetails,initialTeamDetails]);
+  }, [teamDetails, initialTeamDetails]);
 
   const isFormValuesSame = () => {
     // console.log(initialTeamDetails,'initialTeamDetails');
     // console.log(teamDetails,'currentTeamDetails')
-    const matchTheseFields = ['teamPriorityRating','teamAssociation','teamForecastYTD','interactionNote']
-    let count =0;
-    matchTheseFields.forEach((field:string)=>{
-      if(initialTeamDetails[field] === teamDetails[field])
-      count++
-    })
+    const matchTheseFields = [
+      "teamPriorityRating",
+      "teamAssociation",
+      "teamForecastYTD",
+      "interactionNote",
+    ];
+    let count = 0;
+    matchTheseFields.forEach((field: string) => {
+      if (initialTeamDetails[field] === teamDetails[field]) count++;
+    });
     // console.log(count)
-    return (count === matchTheseFields.length ? true : false);
+    return count === matchTheseFields.length ? true : false;
   };
 
   const submitHandler = (e: any) => {
@@ -85,6 +98,17 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     )
       .then((res) => {
         console.log("submitted successfully");
+        setUpdatedSuccessfully(true);
+        AxiosInstance.get(`/team/${e.target.value}/fetchData`)
+          .then((res) => {
+            setTeamDetails(res.data);
+            setInitialTeamDetails(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            setTeamDetails(teamDetailsConstant);
+            setInitialTeamDetails(teamDetailsConstant);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -123,9 +147,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const getAssociationCheckboxList = (checked: boolean, newValue: string) => {
-    const teamAssociationArray: string[] =
-    
-      (teamDetails?.teamAssociation || '').split(";");
+    const teamAssociationArray: string[] = (
+      teamDetails?.teamAssociation || ""
+    ).split(";");
     let newTeamAssociationArray: string[] = [];
     if (checked) {
       teamAssociationArray.push(newValue);
@@ -333,6 +357,11 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             Submit
           </Button>
         </Form>
+        {updatedSuccessfully && (
+          <Alert key={"success"} variant={"success"}>
+            Updated Successfully!
+          </Alert>
+        )}
       </Card.Body>
     </Card>
   );
