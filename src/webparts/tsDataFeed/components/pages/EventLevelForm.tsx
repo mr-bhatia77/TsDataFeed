@@ -97,6 +97,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     // call event list API
     setEventOptions([<option value="Select Event">Select Event</option>]);
     setEventDetails({});
+    setInitialEventDetails({});
     AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`)
       .then((res) => {
         setEventOptions(eventOptionsMaker(res?.data));
@@ -122,7 +123,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const changeInputHandler = (e: any) => {
     // console.log(e.target.id);
-    setEventDetails({ ...eventDetails, [e.target.id]: e.target.value });
+    setEventDetails({ ...eventDetails, [e.target.id]: e.target.value!==''?e.target.value:null });
   };
 
   const isFormValuesSame = () => {
@@ -220,7 +221,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="individualOtherForecastYTD"
                     type="number"
                     step={0.01}
-                    value={!eventDetails?.individualOtherForecastYTD?'':eventDetails?.individualOtherForecastYTD}
+                    value={
+                      !eventDetails?.individualOtherForecastYTD
+                        ? ""
+                        : eventDetails?.individualOtherForecastYTD
+                    }
                     onChange={changeInputHandler}
                     disabled={!eventDetails?.eventId}
                   />
@@ -257,7 +262,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="overallTeamForecastYTD"
                     type="number"
                     step={0.01}
-                    value={!eventDetails?.overallTeamForecastYTD?'':eventDetails?.overallTeamForecastYTD}
+                    value={
+                      !eventDetails?.overallTeamForecastYTD
+                        ? ""
+                        : eventDetails?.overallTeamForecastYTD
+                    }
                     onChange={changeInputHandler}
                     disabled={!eventDetails?.eventId}
                   />
@@ -309,7 +318,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     disabled
                   />
                 </InputGroup>
-                {eventDetails?.sponsorshipForecast>0 && (
+                {eventDetails?.sponsorshipForecast > 0 && (
                   <Form.Text className="text-muted">
                     Sponsorship Forecast -{" "}
                     {new Intl.NumberFormat("en-US", {
@@ -329,27 +338,37 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   as="textarea"
                   id="forecastInfo"
                   style={{ height: "100px" }}
-                  value={!eventDetails?.forecastInfo?'':eventDetails?.forecastInfo}
+                  value={
+                    !eventDetails?.forecastInfo
+                      ? ""
+                      : eventDetails?.forecastInfo
+                  }
                   onChange={changeInputHandler}
                   disabled={!eventDetails?.eventId}
                 />
               </Form.Group>
             </Col>
           </Row>
-          <Button
-            className="mb-3"
-            variant="primary"
-            type="submit"
-            disabled={submitDisabled}
-          >
-            Submit
-          </Button>
+          <Row>
+            <Col xs={2}>
+              <Button
+                className="mb-3"
+                variant="primary"
+                type="submit"
+                disabled={submitDisabled}
+              >
+                Submit
+              </Button>
+            </Col>
+            <Col xs={6}>
+              {updatedSuccessfully && (
+                <Alert key={"success"} variant={"success"} className="banner">
+                  Updated Successfully!
+                </Alert>
+              )}
+            </Col>
+          </Row>
         </Form>
-        {updatedSuccessfully && (
-          <Alert key={"success"} variant={"success"}>
-            Updated Successfully!
-          </Alert>
-        )}
       </Card.Body>
     </Card>
   );

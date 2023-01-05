@@ -101,28 +101,28 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         payload[i] = teamDetails[i];
       }
     }
-    AxiosInstance.put(
-      `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
-      payload
-    )
-      .then((res) => {
-        console.log("submitted successfully");
-        setUpdatedSuccessfully(true);
-        AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
-          .then((res) => {
-            setTeamDetails(res.data);
-            setInitialTeamDetails(res.data);
-          })
-          .catch((error) => {
-            console.log(error);
-            setTeamDetails(teamDetailsConstant);
-            setInitialTeamDetails(teamDetailsConstant);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // console.log(userEmail,payload);
+    // AxiosInstance.put(
+    //   `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
+    //   payload
+    // )
+    //   .then((res) => {
+    //     console.log("submitted successfully");
+    //     setUpdatedSuccessfully(true);
+    //     AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
+    //       .then((res) => {
+    //         setTeamDetails(res.data);
+    //         setInitialTeamDetails(res.data);
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //         setTeamDetails(teamDetailsConstant);
+    //         setInitialTeamDetails(teamDetailsConstant);
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    console.log(userEmail,payload);
   };
 
   const changeInputHandler = (e: any) => {
@@ -132,10 +132,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call team list from event API
-    setTeamOptions([
-      <option value="Select Team">Select Team</option>,
-    ])
-    setTeamDetails({})
+    setTeamOptions([<option value="Select Team">Select Team</option>]);
+    setTeamDetails({});
+    setInitialTeamDetails({});
     AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`)
       .then((res) => {
         setTeamOptions(teamOptionsMaker(res.data));
@@ -161,7 +160,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const getAssociationCheckboxList = (checked: boolean, newValue: string) => {
-    const teamAssociationArray: string[] = (teamDetails?.teamAssociation?teamDetails?.teamAssociation?.split(';'):[])
+    const teamAssociationArray: string[] = teamDetails?.teamAssociation
+      ? teamDetails?.teamAssociation?.split(";")
+      : [];
     let newTeamAssociationArray: string[] = [];
     if (checked) {
       teamAssociationArray.push(newValue);
@@ -215,7 +216,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const selectPriorityHandler = (e: any) => {
-    setTeamDetails({ ...teamDetails, teamPriorityRating: e.target.value });
+    setTeamDetails({ ...teamDetails, teamPriorityRating: e.target.value==='Select Team Priority'?null:e.target.value });
   };
 
   return (
@@ -251,7 +252,11 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Control
                 type="text"
                 disabled
-                value={teamDetails?.teamCaptainName?teamDetails?.teamCaptainName:''}
+                value={
+                  teamDetails?.teamCaptainName
+                    ? teamDetails?.teamCaptainName
+                    : ""
+                }
               />
             </Form.Group>
             <Form.Group as={Col} className="mb-3">
@@ -259,7 +264,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Control
                 type="text"
                 disabled
-                value={teamDetails?.teamCoCaptain?teamDetails?.teamCoCaptain:""}
+                value={
+                  teamDetails?.teamCoCaptain ? teamDetails?.teamCoCaptain : ""
+                }
               />
             </Form.Group>
           </Row>
@@ -272,7 +279,11 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 <Form.Control
                   type="number"
                   disabled
-                  value={teamDetails?.numberTeamMemberIncludingCaptain?teamDetails?.numberTeamMemberIncludingCaptain:""}
+                  value={
+                    teamDetails?.numberTeamMemberIncludingCaptain
+                      ? teamDetails?.numberTeamMemberIncludingCaptain
+                      : ""
+                  }
                 />
               </Form.Group>
             </Col>
@@ -317,7 +328,10 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Team Priority</Form.Label>
-                <Form.Select onChange={selectPriorityHandler} disabled={!teamDetails?.teamId}>
+                <Form.Select
+                  onChange={selectPriorityHandler}
+                  disabled={!teamDetails?.teamId}
+                >
                   {priorityOptionsMaker(teamDetails?.teamPriorityRating)}
                 </Form.Select>
               </Form.Group>
@@ -348,7 +362,11 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   type="number"
                   step={0.01}
                   onChange={changeInputHandler}
-                  value={teamDetails?.teamForecastYTD?teamDetails?.teamForecastYTD:""}
+                  value={
+                    teamDetails?.teamForecastYTD
+                      ? teamDetails?.teamForecastYTD
+                      : ""
+                  }
                   disabled={!teamDetails?.teamId}
                 />
               </InputGroup>
@@ -360,25 +378,34 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               as="textarea"
               id="interactionNote"
               style={{ height: "100px" }}
-              value={teamDetails?.interactionNote?teamDetails?.interactionNote:""}
+              value={
+                teamDetails?.interactionNote ? teamDetails?.interactionNote : ""
+              }
               onChange={changeInputHandler}
               disabled={!teamDetails?.teamId}
             />
           </Form.Group>
-          <Button
-            className="mb-3"
-            variant="primary"
-            type="submit"
-            disabled={submitDisabled}
-          >
-            Submit
-          </Button>
+          <Row>
+            <Col xs={2}>
+            <Button
+              className="mb-3"
+              variant="primary"
+              type="submit"
+              disabled={submitDisabled}
+            >
+              Submit
+            </Button>
+            </Col>
+            <Col xs={6}>
+            { updatedSuccessfully &&(
+              <Alert key={"success"} variant={"success"} className='banner'>
+                Updated Successfully!
+              </Alert>
+              
+            )}
+            </Col>
+          </Row>
         </Form>
-        {updatedSuccessfully && (
-          <Alert key={"success"} variant={"success"}>
-            Updated Successfully!
-          </Alert>
-        )}
       </Card.Body>
     </Card>
   );
