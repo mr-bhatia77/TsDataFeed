@@ -75,7 +75,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       payload
     )
       .then((res) => {
-        console.log("submitted successfully");
+        // console.log("submitted successfully");
         setUpdatedSuccessfully(true);
         AxiosInstance.get(`/event/${eventDetails?.eventId}/fetchData`)
           .then((res) => {
@@ -90,7 +90,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       .catch((error) => {
         console.log(error);
       });
-    console.log(userEmail, payload);
+    // console.log(userEmail, payload);
   };
 
   const chapterSelectHandler = (e: any) => {
@@ -124,8 +124,8 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const isFormValuesSame = () => {
-    console.log(initialEventDetails, "initialTeamDetails");
-    console.log(eventDetails, "currentTeamDetails");
+    // console.log(initialEventDetails, "initialTeamDetails");
+    // console.log(eventDetails, "currentTeamDetails");
 
     const matchTheseFields = [
       "individualOtherForecastYTD",
