@@ -39,10 +39,19 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const [updatedSuccessfully, setUpdatedSuccessfully] =
     useState<boolean>(false);
 
+  const compare = (a: any, b: any) => {
+    if (a.eventName < b.eventName) {
+      return -1;
+    }
+    if (a.eventName > b.eventName) {
+      return 1;
+    }
+    return 0;
+  };
   useEffect(() => {
     AxiosInstance.get(`/meta/allEvents/fetchData`)
       .then((res) => {
-        setEventOptions(eventOptionsMaker(res.data));
+        setEventOptions(eventOptionsMaker(res?.data.sort(compare)));
       })
       .catch((error) => {
         console.log(error);
@@ -113,6 +122,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       .catch((error) => {
         console.log(error);
       });
+    // console.log(userEmail,payload);
   };
 
   const changeInputHandler = (e: any) => {
@@ -122,6 +132,10 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call team list from event API
+    setTeamOptions([
+      <option value="Select Team">Select Team</option>,
+    ])
+    setTeamDetails({})
     AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`)
       .then((res) => {
         setTeamOptions(teamOptionsMaker(res.data));
@@ -147,9 +161,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   };
 
   const getAssociationCheckboxList = (checked: boolean, newValue: string) => {
-    const teamAssociationArray: string[] = (
-      teamDetails?.teamAssociation || ""
-    ).split(";");
+    const teamAssociationArray: string[] = (teamDetails?.teamAssociation?teamDetails?.teamAssociation?.split(';'):[])
     let newTeamAssociationArray: string[] = [];
     if (checked) {
       teamAssociationArray.push(newValue);
@@ -161,6 +173,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         }
       });
     }
+    // console.log(newTeamAssociationArray)
+    // console.log(newTeamAssociationArray.join(";"));
     return newTeamAssociationArray.join(";");
   };
 
@@ -191,6 +205,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             value={item}
             checked={teamAssociationHashMap[item] == 1}
             onChange={handleCheckBox}
+            disabled={!teamDetails?.teamId}
           />
         );
       }
@@ -236,7 +251,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Control
                 type="text"
                 disabled
-                value={teamDetails?.teamCaptainName}
+                value={teamDetails?.teamCaptainName?teamDetails?.teamCaptainName:''}
               />
             </Form.Group>
             <Form.Group as={Col} className="mb-3">
@@ -244,7 +259,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Control
                 type="text"
                 disabled
-                value={teamDetails?.teamCoCaptain}
+                value={teamDetails?.teamCoCaptain?teamDetails?.teamCoCaptain:""}
               />
             </Form.Group>
           </Row>
@@ -257,7 +272,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 <Form.Control
                   type="number"
                   disabled
-                  value={teamDetails?.numberTeamMemberIncludingCaptain}
+                  value={teamDetails?.numberTeamMemberIncludingCaptain?teamDetails?.numberTeamMemberIncludingCaptain:""}
                 />
               </Form.Group>
             </Col>
@@ -302,7 +317,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Team Priority</Form.Label>
-                <Form.Select onChange={selectPriorityHandler}>
+                <Form.Select onChange={selectPriorityHandler} disabled={!teamDetails?.teamId}>
                   {priorityOptionsMaker(teamDetails?.teamPriorityRating)}
                 </Form.Select>
               </Form.Group>
@@ -333,7 +348,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   type="number"
                   step={0.01}
                   onChange={changeInputHandler}
-                  value={teamDetails?.teamForecastYTD}
+                  value={teamDetails?.teamForecastYTD?teamDetails?.teamForecastYTD:""}
+                  disabled={!teamDetails?.teamId}
                 />
               </InputGroup>
             </Form.Group>
@@ -344,8 +360,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               as="textarea"
               id="interactionNote"
               style={{ height: "100px" }}
-              value={teamDetails?.interactionNote}
+              value={teamDetails?.interactionNote?teamDetails?.interactionNote:""}
               onChange={changeInputHandler}
+              disabled={!teamDetails?.teamId}
             />
           </Form.Group>
           <Button

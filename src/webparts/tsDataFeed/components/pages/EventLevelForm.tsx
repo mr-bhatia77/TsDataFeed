@@ -95,6 +95,8 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const chapterSelectHandler = (e: any) => {
     // call event list API
+    setEventOptions([<option value="Select Event">Select Event</option>]);
+    setEventDetails({});
     AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`)
       .then((res) => {
         setEventOptions(eventOptionsMaker(res?.data));
@@ -144,7 +146,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   useEffect(() => {
     AxiosInstance.get("/meta/chaptersList/fetchData")
       .then((res) => {
-        setChapterOptions(chapterOptionsMaker(res?.data));
+        setChapterOptions(chapterOptionsMaker(res?.data.sort()));
       })
       .catch((error) => {
         console.log(error);
@@ -156,11 +158,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     setSubmitDisabled(isFormValuesSame());
   }, [eventDetails, initialEventDetails]);
 
-  useEffect(()=>{
-    setTimeout(()=>{
+  useEffect(() => {
+    setTimeout(() => {
       setUpdatedSuccessfully(false);
-    },5000)
-  },[updatedSuccessfully])
+    }, 5000);
+  }, [updatedSuccessfully]);
 
   const popover = (
     <Popover id="popover-basic">
@@ -218,8 +220,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="individualOtherForecastYTD"
                     type="number"
                     step={0.01}
-                    value={eventDetails?.individualOtherForecastYTD}
+                    value={!eventDetails?.individualOtherForecastYTD?'':eventDetails?.individualOtherForecastYTD}
                     onChange={changeInputHandler}
+                    disabled={!eventDetails?.eventId}
                   />
                 </InputGroup>
                 {eventDetails?.individualOtherModifiedDate && (
@@ -227,7 +230,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     Last modified -{" "}
                     {new Date(
                       eventDetails?.individualOtherModifiedDate
-                    ).toLocaleString("en-IN")}
+                    ).toLocaleString("en-US")}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -241,9 +244,10 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   {eventDetails?.overallTeamForecastYTD && (
                     <h6 className="displayInline">
                       &nbsp;
-                      {new Intl.NumberFormat("en-US").format(
-                        eventDetails?.overallTeamForecastYTD
-                      )}
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(eventDetails?.overallTeamForecastYTD)}
                     </h6>
                   )}
                 </Form.Label>
@@ -253,8 +257,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="overallTeamForecastYTD"
                     type="number"
                     step={0.01}
-                    value={eventDetails?.overallTeamForecastYTD}
+                    value={!eventDetails?.overallTeamForecastYTD?'':eventDetails?.overallTeamForecastYTD}
                     onChange={changeInputHandler}
+                    disabled={!eventDetails?.eventId}
                   />
                 </InputGroup>
                 {eventDetails?.overallTeamModifiedDate && (
@@ -262,7 +267,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     Last modified -{" "}
                     {new Date(
                       eventDetails?.overallTeamModifiedDate
-                    ).toLocaleString("en-IN")}
+                    ).toLocaleString("en-US")}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -289,10 +294,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                       eventDetails?.individualOtherForecastYTD ||
                       eventDetails?.overallTeamForecastYTD ||
                       eventDetails?.sponsorshipForecast
-                        ? new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                          }).format(
+                        ? new Intl.NumberFormat("en-US").format(
                             Math.round(
                               (Number(
                                 eventDetails?.individualOtherForecastYTD
@@ -307,7 +309,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     disabled
                   />
                 </InputGroup>
-                {eventDetails?.sponsorshipForecast && (
+                {eventDetails?.sponsorshipForecast>0 && (
                   <Form.Text className="text-muted">
                     Sponsorship Forecast -{" "}
                     {new Intl.NumberFormat("en-US", {
@@ -325,10 +327,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 <Form.Label>Forecast Info:</Form.Label>
                 <Form.Control
                   as="textarea"
-                  id="forecast_info"
+                  id="forecastInfo"
                   style={{ height: "100px" }}
-                  value={eventDetails?.forecast_info}
+                  value={!eventDetails?.forecastInfo?'':eventDetails?.forecastInfo}
                   onChange={changeInputHandler}
+                  disabled={!eventDetails?.eventId}
                 />
               </Form.Group>
             </Col>

@@ -2,7 +2,7 @@ import * as React from "react";
 
 export const chapterOptionsMaker = (itemList: string[]) => {
   const chapterOptions: any[] = [
-    <option value="Select Chapter">Select Chapter</option>,
+    <option value="Select Chapter" selected>Select Chapter</option>,
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {
@@ -18,7 +18,7 @@ export const eventOptionsMaker = (
   itemList: any[],
 ) => {
   const eventOptions: any[] = [
-    <option value="Select Event">Select Event</option>,
+    <option value="Select Event" selected={true}>Select Event</option>,
   ];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
@@ -31,11 +31,12 @@ export const eventOptionsMaker = (
       );
     });
   }
+//   console.log(eventOptions)
   return eventOptions;
 };
 
 export const teamOptionsMaker = (itemList: any[]) => {
-  const teamOptions: any[] = [<option value="Select Team">Select Team</option>];
+  const teamOptions: any[] = [<option value="Select Team" selected>Select Team</option>];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
       teamOptions.push(<option value={item.teamId}>{item.teamName}</option>);
