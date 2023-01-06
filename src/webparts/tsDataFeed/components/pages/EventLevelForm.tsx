@@ -11,11 +11,6 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import Alert from "react-bootstrap/Alert";
 import {
-  eventDetailsConstant,
-  chapterList,
-  eventList,
-} from "../../services/constants";
-import {
   chapterOptionsMaker,
   eventOptionsMaker,
 } from "../../services/commonFunctions";
@@ -28,15 +23,19 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const { userEmail } = props;
   const [eventDetails, setEventDetails] = useState<any>({});
   const [eventOptions, setEventOptions] = useState([
-    <option value="Select Event">Select Event</option>,
+    <option value="Select Event" className="textItalic">
+      Select Event
+    </option>,
   ]);
   const [chapterOptions, setChapterOptions] = useState([
-    <option value="Select Chapter">Select Chapter</option>,
+    <option value="Select Chapter" className="textItalic">
+      Select Chapter
+    </option>,
   ]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [initialEventDetails, setInitialEventDetails] = useState<any>({});
-  const [updatedSuccessfully, setUpdatedSuccessfully] =
-    useState<boolean>(false);
+  const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
+  const [errorState, setErrorState] = useState<boolean>(false);
 
   const submitHandler = (e: any) => {
     e.preventDefault();
@@ -76,19 +75,21 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     )
       .then((res) => {
         // console.log("submitted successfully");
-        setUpdatedSuccessfully(true);
+        setUpdatedSuccessfully("success");
         AxiosInstance.get(`/event/${eventDetails?.eventId}/fetchData`)
           .then((res) => {
             setEventDetails(res?.data);
             setInitialEventDetails(res?.data);
           })
           .catch((error) => {
-            setEventDetails(eventDetailsConstant);
-            setInitialEventDetails(eventDetailsConstant);
+            console.log(error);
+            setErrorState(true);
           });
       })
       .catch((error) => {
         console.log(error);
+        setErrorState(true);
+        setUpdatedSuccessfully("error");
       });
     // console.log(userEmail, payload);
   };
@@ -98,32 +99,42 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     setEventOptions([<option value="Select Event">Select Event</option>]);
     setEventDetails({});
     setInitialEventDetails({});
-    AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`)
-      .then((res) => {
-        setEventOptions(eventOptionsMaker(res?.data));
-      })
-      .catch((error) => {
-        console.log(error);
-        setEventOptions(eventOptionsMaker(eventList));
-      });
+    if (e.target.value !== "Select Chapter") {
+      AxiosInstance.get(`/meta/eventsByChapter/${e.target.value}/fetchData`)
+        .then((res) => {
+          setEventOptions(eventOptionsMaker(res?.data));
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorState(true);
+        });
+    }
   };
 
   const eventSelectHandler = (e: any) => {
     //call event details API
-    AxiosInstance.get(`/event/${e.target.value}/fetchData`)
-      .then((res) => {
-        setEventDetails(res?.data);
-        setInitialEventDetails(res?.data);
-      })
-      .catch((error) => {
-        setEventDetails(eventDetailsConstant);
-        setInitialEventDetails(eventDetailsConstant);
-      });
+    if (e.target.value !== "Select Event") {
+      AxiosInstance.get(`/event/${e.target.value}/fetchData`)
+        .then((res) => {
+          setEventDetails(res?.data);
+          setInitialEventDetails(res?.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorState(true);
+        });
+    } else {
+      setEventDetails({});
+      setInitialEventDetails({});
+    }
   };
 
   const changeInputHandler = (e: any) => {
     // console.log(e.target.id);
-    setEventDetails({ ...eventDetails, [e.target.id]: e.target.value!==''?e.target.value:null });
+    setEventDetails({
+      ...eventDetails,
+      [e.target.id]: e.target.value !== "" ? e.target.value : null,
+    });
   };
 
   const isFormValuesSame = () => {
@@ -151,7 +162,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       })
       .catch((error) => {
         console.log(error);
-        setChapterOptions(chapterOptionsMaker(chapterList));
+        setErrorState(true);
       });
   }, []);
 
@@ -161,7 +172,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   useEffect(() => {
     setTimeout(() => {
-      setUpdatedSuccessfully(false);
+      setUpdatedSuccessfully("");
     }, 5000);
   }, [updatedSuccessfully]);
 
@@ -182,6 +193,23 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       </Card.Header>
       <Card.Body>
         <Form onSubmit={submitHandler}>
+          <Row>
+            <Col xs={12}>
+              {errorState && (
+                <Alert
+                  variant="danger"
+                  onClose={() => setErrorState(false)}
+                  dismissible
+                >
+                  <Alert.Heading>Something went Wrong!</Alert.Heading>
+                  <p>
+                    Looks like something went wrong! Try reloading the page or
+                    contact admin.
+                  </p>
+                </Alert>
+              )}
+            </Col>
+          </Row>
           <Row>
             <Col xs={6}>
               <Form.Group as={Col} className="mb-3">
@@ -221,6 +249,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="individualOtherForecastYTD"
                     type="number"
                     step={0.01}
+                    min={0}
                     value={
                       !eventDetails?.individualOtherForecastYTD
                         ? ""
@@ -262,6 +291,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     id="overallTeamForecastYTD"
                     type="number"
                     step={0.01}
+                    min={0}
                     value={
                       !eventDetails?.overallTeamForecastYTD
                         ? ""
@@ -286,7 +316,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  Campaign YTD forecast :&nbsp;&nbsp;
+                  Campaign YTD Forecast :&nbsp;&nbsp;
                   <OverlayTrigger
                     placement="right"
                     delay={{ show: 250, hide: 400 }}
@@ -301,30 +331,32 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     type="text"
                     value={
                       eventDetails?.individualOtherForecastYTD ||
-                      eventDetails?.overallTeamForecastYTD ||
-                      eventDetails?.sponsorshipForecast
+                        eventDetails?.overallTeamForecastYTD ||
+                        eventDetails?.sponsorshipForecast
                         ? new Intl.NumberFormat("en-US").format(
-                            Math.round(
-                              (Number(
-                                eventDetails?.individualOtherForecastYTD
-                              ) +
-                                Number(eventDetails?.overallTeamForecastYTD) +
-                                Number(eventDetails?.sponsorshipForecast)) *
-                                100
-                            ) / 100
-                          )
+                          Math.round(
+                            (Number(
+                              eventDetails?.individualOtherForecastYTD
+                            ) +
+                              Number(eventDetails?.overallTeamForecastYTD) +
+                              Number(eventDetails?.sponsorshipForecast)) *
+                            100
+                          ) / 100
+                        )
                         : ""
                     }
                     disabled
                   />
                 </InputGroup>
-                {eventDetails?.sponsorshipForecast > 0 && (
+                {eventDetails?.sponsorshipForecast >= 0 && (
                   <Form.Text className="text-muted">
                     Sponsorship Forecast -{" "}
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(eventDetails?.sponsorshipForecast)}
+                    {eventDetails?.sponsorshipForecast
+                      ? new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(eventDetails?.sponsorshipForecast)
+                      : "$0"}
                   </Form.Text>
                 )}
               </Form.Group>
@@ -337,6 +369,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 <Form.Control
                   as="textarea"
                   id="forecastInfo"
+                  maxLength={255}
                   style={{ height: "100px" }}
                   value={
                     !eventDetails?.forecastInfo
@@ -346,6 +379,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   onChange={changeInputHandler}
                   disabled={!eventDetails?.eventId}
                 />
+                <Form.Text className="text-muted">
+                  (max 255 characters)
+                </Form.Text>
               </Form.Group>
             </Col>
           </Row>
@@ -361,9 +397,14 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               </Button>
             </Col>
             <Col xs={6}>
-              {updatedSuccessfully && (
+              {updatedSuccessfully === "success" && (
                 <Alert key={"success"} variant={"success"} className="banner">
                   Updated Successfully!
+                </Alert>
+              )}
+              {updatedSuccessfully === "error" && (
+                <Alert key={"danger"} variant={"danger"} className="banner">
+                  Something Went Wrong!
                 </Alert>
               )}
             </Col>

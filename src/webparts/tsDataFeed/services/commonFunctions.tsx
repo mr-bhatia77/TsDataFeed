@@ -2,7 +2,7 @@ import * as React from "react";
 
 export const chapterOptionsMaker = (itemList: string[]) => {
   const chapterOptions: any[] = [
-    <option value="Select Chapter" selected>Select Chapter</option>,
+    <option value="Select Chapter" selected className="textItalic">Select Chapter</option>,
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {
@@ -18,7 +18,7 @@ export const eventOptionsMaker = (
   itemList: any[],
 ) => {
   const eventOptions: any[] = [
-    <option value="Select Event" selected={true}>Select Event</option>,
+    <option value="Select Event" selected={true} className="textItalic">Select Event</option>,
   ];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
@@ -36,7 +36,7 @@ export const eventOptionsMaker = (
 };
 
 export const teamOptionsMaker = (itemList: any[]) => {
-  const teamOptions: any[] = [<option value="Select Team" selected>Select Team</option>];
+  const teamOptions: any[] = [<option value="Select Team" className="textItalic" selected>Select Team</option>];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
       teamOptions.push(<option value={item.teamId}>{item.teamName}</option>);
@@ -47,7 +47,7 @@ export const teamOptionsMaker = (itemList: any[]) => {
 
 export const priorityOptionsMaker = (priority?: string) => {
   const teamOptions: any[] = [
-    <option value="Select Team Priority">Select Team Priority</option>,
+    <option value="Select Team Priority" className="textItalic">Select Team Priority</option>,
     <option value="A" selected={priority == 'A'}>A</option>,
     <option value="B" selected={priority == 'B'}>B</option>,
     <option value="C" selected={priority == 'C'}>C</option>,
