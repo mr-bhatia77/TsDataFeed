@@ -406,7 +406,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Form.Control
               as="textarea"
               id="interactionNote"
-              maxLength={255}
+              maxLength={4000}
               style={{ height: "100px" }}
               value={
                 teamDetails?.interactionNote ? teamDetails?.interactionNote : ""
@@ -414,7 +414,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               onChange={changeInputHandler}
               disabled={!teamDetails?.teamId}
             />
-             <Form.Text className="text-muted">(max 255 characters)</Form.Text>
+             <Form.Text className="text-muted">(max 4000 characters)</Form.Text>
           </Form.Group>
           <Row>
             <Col xs={2}>
