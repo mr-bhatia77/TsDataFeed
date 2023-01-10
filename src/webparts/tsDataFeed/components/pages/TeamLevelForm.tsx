@@ -24,7 +24,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const { userEmail } = props;
   const [eventOptions, setEventOptions] = useState([
     <option value="Select Event" className="textItalic">
-      <i>Select Event</i>
+      Select Event
     </option>,
   ]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
@@ -302,7 +302,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  No of Team Members Including team Captain:
+                Number of Team Members (including Team Captain):
                 </Form.Label>
                 <Form.Control
                   type="number"
@@ -335,7 +335,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               </InputGroup>
             </Form.Group>
             <Form.Group as={Col} className="mb-3">
-              <Form.Label>Team Actual YTD:</Form.Label>
+              <Form.Label>Team Fundraising Actual YTD:</Form.Label>
               <InputGroup>
                 <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
                 <Form.Control
@@ -366,7 +366,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             </Col>
           </Row>
           <Form.Group className="mb-3">
-            <Form.Label>Team Association(select all applicable): </Form.Label>
+            <Form.Label>Team Association (select all applicable): </Form.Label>
             {getTeamAssociationCheckbox(teamDetails?.teamAssociation)}
           </Form.Group>
           <Row>
