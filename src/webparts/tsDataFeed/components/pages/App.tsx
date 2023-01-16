@@ -39,9 +39,9 @@ const App: FunctionComponent<IApp> = (props) => {
             <TeamLevelForm userName={userDisplayName} userEmail={userEmail}/>
           </div>
         </Tab>
-        <Tab eventKey="dataView" title="Data view" disabled>
+        {/* <Tab eventKey="dataView" title="Data view" disabled>
           <h1>EXTRA TABLE PAGE</h1>
-        </Tab>
+        </Tab> */}
       </Tabs>
     </Container>
   );
