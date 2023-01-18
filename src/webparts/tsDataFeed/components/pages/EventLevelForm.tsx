@@ -13,6 +13,7 @@ import Alert from "react-bootstrap/Alert";
 import {
   chapterOptionsMaker,
   eventOptionsMaker,
+  nationalManagerOptionsMaker,
 } from "../../services/commonFunctions";
 interface IEventLevelForm {
   userName: string;
@@ -32,6 +33,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       Select Chapter
     </option>,
   ]);
+  const [nationalManagerOptions, setNationalManagerOptions] = useState([
+    <option value="Select National Manager" className="textItalic">
+      Select National Manager
+    </option>,
+  ]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [initialEventDetails, setInitialEventDetails] = useState<any>({});
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
@@ -47,6 +53,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       overallTeamModifiedDate: null,
       forecastInfo: null,
       campaignForecastYTD: null,
+      nationalManager: null
     };
     const finalCampaignForecastYTD = (
       Number(eventDetails?.individualOtherForecastYTD) +
@@ -114,10 +121,19 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const eventSelectHandler = (e: any) => {
     //call event details API
     if (e.target.value !== "Select Event") {
-      AxiosInstance.get(`/event/${e.target.value}/fetchData`)
+      Promise.all([
+        AxiosInstance.get(`/event/${e.target.value}/fetchData`),
+        AxiosInstance.get(`/meta/nationalManagerList/fetchData`),
+      ])
         .then((res) => {
-          setEventDetails(res?.data);
-          setInitialEventDetails(res?.data);
+          setEventDetails(res[0]?.data);
+          setInitialEventDetails(res[0]?.data);
+          setNationalManagerOptions(
+            nationalManagerOptionsMaker(
+              res[1].data,
+              res[0].data.nationalManager
+            )
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -126,6 +142,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     } else {
       setEventDetails({});
       setInitialEventDetails({});
+      setNationalManagerOptions([
+        <option value="Select National Manager" className="textItalic">
+          Select National Manager
+        </option>,
+      ]);
     }
   };
 
@@ -146,6 +167,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "overallTeamForecastYTD",
       "forecastInfo",
       "campaignForecastYTD",
+      "nationalManager"
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -175,6 +197,14 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       setUpdatedSuccessfully("");
     }, 5000);
   }, [updatedSuccessfully]);
+
+  const selectNationalManagerHandler = (e: any) => {
+    setEventDetails({
+      ...eventDetails,
+      nationalManager:
+        e.target.value === "Select National Manager" ? null : e.target.value,
+    });
+  };
 
   const popover = (
     <Popover id="popover-basic">
@@ -229,12 +259,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             </Form.Group>
           </Row>
           <Row>
-            <Col xs={6}>
+            <Col xs={9}>
               <Form.Group className="mb-3">
-                <Form.Label>National Manager</Form.Label>
-                <Form.Select disabled={!eventDetails?.eventId}>
-                  <option>Select National Manager</option>
-                  
+                <Form.Label>National Manager: </Form.Label>
+                <Form.Select disabled={!eventDetails?.eventId} onChange={selectNationalManagerHandler}>
+                  {nationalManagerOptions}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -342,18 +371,18 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     type="text"
                     value={
                       eventDetails?.individualOtherForecastYTD ||
-                        eventDetails?.overallTeamForecastYTD ||
-                        eventDetails?.sponsorshipForecast
+                      eventDetails?.overallTeamForecastYTD ||
+                      eventDetails?.sponsorshipForecast
                         ? new Intl.NumberFormat("en-US").format(
-                          Math.round(
-                            (Number(
-                              eventDetails?.individualOtherForecastYTD
-                            ) +
-                              Number(eventDetails?.overallTeamForecastYTD) +
-                              Number(eventDetails?.sponsorshipForecast)) *
-                            100
-                          ) / 100
-                        )
+                            Math.round(
+                              (Number(
+                                eventDetails?.individualOtherForecastYTD
+                              ) +
+                                Number(eventDetails?.overallTeamForecastYTD) +
+                                Number(eventDetails?.sponsorshipForecast)) *
+                                100
+                            ) / 100
+                          )
                         : ""
                     }
                     disabled
@@ -364,9 +393,9 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                     Sponsorship Forecast -{" "}
                     {eventDetails?.sponsorshipForecast
                       ? new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(eventDetails?.sponsorshipForecast)
+                          style: "currency",
+                          currency: "USD",
+                        }).format(eventDetails?.sponsorshipForecast)
                       : "$0"}
                   </Form.Text>
                 )}

@@ -6,7 +6,7 @@ export const chapterOptionsMaker = (itemList: string[]) => {
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {
-      chapterOptions.push(
+      item && chapterOptions.push(
         <option value={item}>{item}</option>
       );
     });
@@ -22,7 +22,7 @@ export const eventOptionsMaker = (
   ];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
-      eventOptions.push(
+      item && eventOptions.push(
         <option
           value={item.eventId}
         >
@@ -39,7 +39,7 @@ export const teamOptionsMaker = (itemList: any[]) => {
   const teamOptions: any[] = [<option value="Select Team" className="textItalic" selected>Select Team</option>];
   if (itemList?.length && itemList) {
     itemList.forEach((item: any) => {
-      teamOptions.push(<option value={item.teamId}>{item.teamName}</option>);
+      item && teamOptions.push(<option value={item.teamId}>{item.teamName}</option>);
     });
   }
   return teamOptions;
@@ -57,16 +57,30 @@ export const priorityOptionsMaker = (priority?: string) => {
 };
 
 
-export const staffLeadOptionsMaker = (itemList: string[],selected?: string) => {
-  const chapterOptions: any[] = [
+export const staffLeadOptionsMaker = (itemList: string[],selectedStaffLead?: string) => {
+  const staffLeadOptions: any[] = [
     <option value="Select Staff Lead" selected className="textItalic">Select Staff Lead</option>,
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {
-      chapterOptions.push(
-        <option value={item} selected={item == selected}>{item}</option>
+      item && staffLeadOptions.push(
+        <option value={item} selected={item == selectedStaffLead}>{item}</option>
       );
     });
   }
-  return chapterOptions;
+  return staffLeadOptions;
+};
+
+export const nationalManagerOptionsMaker = (itemList: string[],selectedNationalManager?: string) => {
+  const nationalManagerOptions: any[] = [
+    <option value="Select Staff Lead" selected className="textItalic">Select Staff Lead</option>,
+  ];
+  if (itemList?.length) {
+    itemList.forEach((item: any) => {
+      item && nationalManagerOptions.push(
+        <option value={item} selected={item == selectedNationalManager}>{item}</option>
+      );
+    });
+  }
+  return nationalManagerOptions;
 };

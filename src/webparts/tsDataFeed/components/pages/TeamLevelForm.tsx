@@ -7,14 +7,14 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { teamAssociationCheckList, 
-  // staffLead
- } from "../../services/constants";
+import {
+  teamAssociationCheckList,
+} from "../../services/constants";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
   priorityOptionsMaker,
-  staffLeadOptionsMaker
+  staffLeadOptionsMaker,
 } from "../../services/commonFunctions";
 import AxiosInstance from "../../services/AxiosInstance";
 
@@ -37,7 +37,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     </option>,
   ]);
   const [staffLeadOptions, setStaffLeadOptions] = useState([
-    <option value="Select Team" className="textItalic">
+    <option value="Select Staff Lead" className="textItalic">
       Select Staff Lead
     </option>,
   ]);
@@ -159,11 +159,16 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   const teamSelectHandler = (e: any) => {
     //call team details API
     if (e.target.value !== "Select Team") {
-      Promise.all([AxiosInstance.get(`/team/${e.target.value}/fetchData`),AxiosInstance.get(`/meta/leadStaffList/fetchData`)])
+      Promise.all([
+        AxiosInstance.get(`/team/${e.target.value}/fetchData`),
+        AxiosInstance.get(`/meta/leadStaffList/fetchData`),
+      ])
         .then((res) => {
           setTeamDetails(res[0].data);
           setInitialTeamDetails(res[0].data);
-          setStaffLeadOptions(staffLeadOptionsMaker(res[1].data,res[0].data.leadStaffName))
+          setStaffLeadOptions(
+            staffLeadOptionsMaker(res[1].data, res[0].data.leadStaffName)
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -173,7 +178,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       setTeamDetails({});
       setInitialTeamDetails({});
       setStaffLeadOptions([
-        <option value="Select Team" className="textItalic">
+        <option value="Select Staff Lead" className="textItalic">
           Select Staff Lead
         </option>,
       ]);
@@ -248,7 +253,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     setTeamDetails({
       ...teamDetails,
       leadStaffName:
-        e.target.value === "Select Team Priority" ? null : e.target.value,
+        e.target.value === "Select Staff Lead" ? null : e.target.value,
     });
   };
 
