@@ -57,14 +57,14 @@ export const priorityOptionsMaker = (priority?: string) => {
 };
 
 
-export const staffLeadOptionsMaker = (itemList: string[]) => {
+export const staffLeadOptionsMaker = (itemList: string[],selected?: string) => {
   const chapterOptions: any[] = [
     <option value="Select Staff Lead" selected className="textItalic">Select Staff Lead</option>,
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {
       chapterOptions.push(
-        <option value={item}>{item}</option>
+        <option value={item} selected={item == selected}>{item}</option>
       );
     });
   }

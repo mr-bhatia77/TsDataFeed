@@ -7,12 +7,14 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { teamAssociationCheckList,staffLead } from "../../services/constants";
+import { teamAssociationCheckList, 
+  // staffLead
+ } from "../../services/constants";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
   priorityOptionsMaker,
-  staffLeadOptionsMaker,
+  staffLeadOptionsMaker
 } from "../../services/commonFunctions";
 import AxiosInstance from "../../services/AxiosInstance";
 
@@ -34,10 +36,14 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       Select Team
     </option>,
   ]);
+  const [staffLeadOptions, setStaffLeadOptions] = useState([
+    <option value="Select Team" className="textItalic">
+      Select Staff Lead
+    </option>,
+  ]);
   const [teamDetails, setTeamDetails] = useState<any>({});
   const [initialTeamDetails, setInitialTeamDetails] = useState<any>({});
-  const [updatedSuccessfully, setUpdatedSuccessfully] =
-    useState<string>('');
+  const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
   const [errorState, setErrorState] = useState<boolean>(false);
 
   const compare = (a: any, b: any) => {
@@ -63,7 +69,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   useEffect(() => {
     setTimeout(() => {
-      setUpdatedSuccessfully('');
+      setUpdatedSuccessfully("");
     }, 5000);
   }, [updatedSuccessfully]);
 
@@ -97,7 +103,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamAssociation: null,
       teamForecastYTD: null,
       interactionNote: null,
-      leadStaffName:null
+      leadStaffName: null,
     };
     for (let i in initialTeamDetails) {
       if (initialTeamDetails[i] != teamDetails[i]) {
@@ -110,7 +116,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     )
       .then((res) => {
         console.log("submitted successfully");
-        setUpdatedSuccessfully('success');
+        setUpdatedSuccessfully("success");
         AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
           .then((res) => {
             setTeamDetails(res.data);
@@ -123,7 +129,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       })
       .catch((error) => {
         console.log(error);
-        setUpdatedSuccessfully('error');
+        setUpdatedSuccessfully("error");
       });
     // console.log(userEmail,payload,teamDetails,initialTeamDetails);
   };
@@ -138,34 +144,39 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     setTeamOptions([<option value="Select Team">Select Team</option>]);
     setTeamDetails({});
     setInitialTeamDetails({});
-    if(e.target.value !== 'Select Event'){
-    AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`)
-      .then((res) => {
-        setTeamOptions(teamOptionsMaker(res.data));
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorState(true);
-      });
+    if (e.target.value !== "Select Event") {
+      AxiosInstance.get(`/meta/teamsListByEvent/${e.target.value}/fetchData`)
+        .then((res) => {
+          setTeamOptions(teamOptionsMaker(res.data));
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorState(true);
+        });
     }
   };
 
   const teamSelectHandler = (e: any) => {
     //call team details API
-    if(e.target.value !== 'Select Team'){
-    AxiosInstance.get(`/team/${e.target.value}/fetchData`)
-      .then((res) => {
-        setTeamDetails(res.data);
-        setInitialTeamDetails(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorState(true);
-      });
-    }
-    else {
+    if (e.target.value !== "Select Team") {
+      Promise.all([AxiosInstance.get(`/team/${e.target.value}/fetchData`),AxiosInstance.get(`/meta/leadStaffList/fetchData`)])
+        .then((res) => {
+          setTeamDetails(res[0].data);
+          setInitialTeamDetails(res[0].data);
+          setStaffLeadOptions(staffLeadOptionsMaker(res[1].data,res[0].data.leadStaffName))
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorState(true);
+        });
+    } else {
       setTeamDetails({});
       setInitialTeamDetails({});
+      setStaffLeadOptions([
+        <option value="Select Team" className="textItalic">
+          Select Staff Lead
+        </option>,
+      ]);
     }
   };
 
@@ -241,8 +252,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     });
   };
 
-  
-
   return (
     <Card>
       <Card.Header>
@@ -315,7 +324,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                Number of Team Members (including Team Captain):
+                  Number of Team Members (including Team Captain):
                 </Form.Label>
                 <Form.Control
                   type="number"
@@ -368,12 +377,47 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
           <Row>
             <Col xs={6}>
               <Form.Group className="mb-3">
+                <Form.Label>
+                  Forecast YTD:{" "}
+                  {teamDetails?.teamForecastYTD && (
+                    <h6 className="displayInline">
+                      &nbsp;
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(teamDetails?.teamForecastYTD)}
+                    </h6>
+                  )}
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
+                  <Form.Control
+                    id="teamForecastYTD"
+                    type="number"
+                    step={0.01}
+                    min={0}
+                    onChange={changeInputHandler}
+                    value={
+                      teamDetails?.teamForecastYTD
+                        ? teamDetails?.teamForecastYTD
+                        : ""
+                    }
+                    disabled={!teamDetails?.teamId}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <Form.Group className="mb-3">
                 <Form.Label>Staff Lead:</Form.Label>
                 <Form.Select
                   onChange={selectLeadStaffHandler}
                   disabled={!teamDetails?.teamId}
                 >
-                  {staffLeadOptionsMaker(staffLead)}
+                  {/* {staffLeadOptionsMaker(staffLead)} */}
+                  {staffLeadOptions}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -395,38 +439,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Form.Label>Team Association (select all applicable): </Form.Label>
             {getTeamAssociationCheckbox(teamDetails?.teamAssociation)}
           </Form.Group>
-          <Row>
-            <Form.Group as={Col} className="mb-3">
-              <Form.Label>
-                Forecast YTD:{" "}
-                {teamDetails?.teamForecastYTD && (
-                  <h6 className="displayInline">
-                    &nbsp;
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(teamDetails?.teamForecastYTD)}
-                  </h6>
-                )}
-              </Form.Label>
-              <InputGroup>
-                <InputGroup.Text id="basic-addon1">$</InputGroup.Text>
-                <Form.Control
-                  id="teamForecastYTD"
-                  type="number"
-                  step={0.01}
-                  min={0}
-                  onChange={changeInputHandler}
-                  value={
-                    teamDetails?.teamForecastYTD
-                      ? teamDetails?.teamForecastYTD
-                      : ""
-                  }
-                  disabled={!teamDetails?.teamId}
-                />
-              </InputGroup>
-            </Form.Group>
-          </Row>
           <Form.Group className="mb-3">
             <Form.Label>Interaction Note: </Form.Label>
             <Form.Control
@@ -440,7 +452,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               onChange={changeInputHandler}
               disabled={!teamDetails?.teamId}
             />
-             <Form.Text className="text-muted">(max 4000 characters)</Form.Text>
+            <Form.Text className="text-muted">(max 4000 characters)</Form.Text>
           </Form.Group>
           <Row>
             <Col xs={2}>
@@ -454,12 +466,12 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               </Button>
             </Col>
             <Col xs={6}>
-            {updatedSuccessfully==='success' && (
+              {updatedSuccessfully === "success" && (
                 <Alert key={"success"} variant={"success"} className="banner">
                   Updated Successfully!
                 </Alert>
               )}
-              {updatedSuccessfully==='error' && (
+              {updatedSuccessfully === "error" && (
                 <Alert key={"danger"} variant={"danger"} className="banner">
                   Something Went Wrong!
                 </Alert>

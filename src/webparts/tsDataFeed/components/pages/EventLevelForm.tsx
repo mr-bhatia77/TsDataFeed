@@ -229,6 +229,17 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             </Form.Group>
           </Row>
           <Row>
+            <Col xs={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>National Manager</Form.Label>
+                <Form.Select disabled={!eventDetails?.eventId}>
+                  <option>Select National Manager</option>
+                  
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>
