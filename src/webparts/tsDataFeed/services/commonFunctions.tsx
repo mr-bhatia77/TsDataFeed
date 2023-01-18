@@ -73,7 +73,7 @@ export const staffLeadOptionsMaker = (itemList: string[],selectedStaffLead?: str
 
 export const nationalManagerOptionsMaker = (itemList: string[],selectedNationalManager?: string) => {
   const nationalManagerOptions: any[] = [
-    <option value="Select Staff Lead" selected className="textItalic">Select Staff Lead</option>,
+    <option value="Select National Manager" selected className="textItalic">Select National Manager</option>,
   ];
   if (itemList?.length) {
     itemList.forEach((item: any) => {

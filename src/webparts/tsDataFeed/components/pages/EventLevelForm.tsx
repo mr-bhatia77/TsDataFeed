@@ -34,10 +34,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     </option>,
   ]);
   const [nationalManagerOptions, setNationalManagerOptions] = useState([
-    <option value="Select National Manager" className="textItalic">
+    <option value="Select National Manager" selected className="textItalic">
       Select National Manager
     </option>,
   ]);
+  const [nationalManagerData, setNationalManagerData] = useState<any>([]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [initialEventDetails, setInitialEventDetails] = useState<any>({});
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
@@ -53,7 +54,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       overallTeamModifiedDate: null,
       forecastInfo: null,
       campaignForecastYTD: null,
-      nationalManager: null
+      nationalManager: null,
     };
     const finalCampaignForecastYTD = (
       Number(eventDetails?.individualOtherForecastYTD) +
@@ -103,6 +104,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const chapterSelectHandler = (e: any) => {
     // call event list API
+    setNationalManagerOptions([
+      <option value="Select National Manager" selected className="textItalic">
+        Select National Manager
+      </option>,
+    ])
     setEventOptions([<option value="Select Event">Select Event</option>]);
     setEventDetails({});
     setInitialEventDetails({});
@@ -120,18 +126,20 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call event details API
+    setNationalManagerOptions([
+      <option value="Select National Manager" selected className="textItalic">
+        Select National Manager
+      </option>,
+    ])
     if (e.target.value !== "Select Event") {
-      Promise.all([
-        AxiosInstance.get(`/event/${e.target.value}/fetchData`),
-        AxiosInstance.get(`/meta/nationalManagerList/fetchData`),
-      ])
+      AxiosInstance.get(`/event/${e.target.value}/fetchData`)
         .then((res) => {
-          setEventDetails(res[0]?.data);
-          setInitialEventDetails(res[0]?.data);
+          setEventDetails(res?.data);
+          setInitialEventDetails(res?.data);
           setNationalManagerOptions(
             nationalManagerOptionsMaker(
-              res[1].data,
-              res[0].data.nationalManager
+              nationalManagerData,
+              res?.data?.nationalManager
             )
           );
         })
@@ -142,11 +150,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     } else {
       setEventDetails({});
       setInitialEventDetails({});
-      setNationalManagerOptions([
-        <option value="Select National Manager" className="textItalic">
-          Select National Manager
-        </option>,
-      ]);
     }
   };
 
@@ -167,7 +170,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "overallTeamForecastYTD",
       "forecastInfo",
       "campaignForecastYTD",
-      "nationalManager"
+      "nationalManager",
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -186,6 +189,10 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setErrorState(true);
       });
+
+    AxiosInstance.get(`/meta/nationalManagerList/fetchData`).then((res) => {
+      setNationalManagerData(res?.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -262,7 +269,10 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Col xs={9}>
               <Form.Group className="mb-3">
                 <Form.Label>National Manager: </Form.Label>
-                <Form.Select disabled={!eventDetails?.eventId} onChange={selectNationalManagerHandler}>
+                <Form.Select
+                  disabled={!eventDetails?.eventId}
+                  onChange={selectNationalManagerHandler}
+                >
                   {nationalManagerOptions}
                 </Form.Select>
               </Form.Group>
