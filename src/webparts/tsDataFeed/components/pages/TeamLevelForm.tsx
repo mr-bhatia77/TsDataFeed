@@ -7,12 +7,11 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { teamAssociationCheckList,staffLead } from "../../services/constants";
+import { teamAssociationCheckList } from "../../services/constants";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
-  priorityOptionsMaker,
-  staffLeadOptionsMaker,
+  priorityOptionsMaker
 } from "../../services/commonFunctions";
 import AxiosInstance from "../../services/AxiosInstance";
 
@@ -78,8 +77,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "teamPriorityRating",
       "teamAssociation",
       "teamForecastYTD",
-      "interactionNote",
-      "leadStaffName",
+      "interactionNote"
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -96,8 +94,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamPriorityRating: null,
       teamAssociation: null,
       teamForecastYTD: null,
-      interactionNote: null,
-      leadStaffName:null
+      interactionNote: null
     };
     for (let i in initialTeamDetails) {
       if (initialTeamDetails[i] != teamDetails[i]) {
@@ -231,17 +228,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamPriorityRating:
         e.target.value === "Select Team Priority" ? null : e.target.value,
     });
-  };
-
-  const selectLeadStaffHandler = (e: any) => {
-    setTeamDetails({
-      ...teamDetails,
-      leadStaffName:
-        e.target.value === "Select Team Priority" ? null : e.target.value,
-    });
-  };
-
-  
+  };  
 
   return (
     <Card>
@@ -364,19 +351,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 />
               </InputGroup>
             </Form.Group>
-          </Row>
-          <Row>
-            <Col xs={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Staff Lead:</Form.Label>
-                <Form.Select
-                  onChange={selectLeadStaffHandler}
-                  disabled={!teamDetails?.teamId}
-                >
-                  {staffLeadOptionsMaker(staffLead)}
-                </Form.Select>
-              </Form.Group>
-            </Col>
           </Row>
           <Row>
             <Col xs={6}>
