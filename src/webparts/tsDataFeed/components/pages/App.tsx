@@ -29,7 +29,7 @@ const App: FunctionComponent<IApp> = (props) => {
         onSelect={(k) => setKey(k)}
         className="mb-3 mt-3"
       >
-        <Tab eventKey="event" title="Event">
+        <Tab eventKey="event" title="Event - Forecast">
           <div className="mt-3">
             <EventLevelForm userName={userDisplayName} userEmail={userEmail} />
           </div>

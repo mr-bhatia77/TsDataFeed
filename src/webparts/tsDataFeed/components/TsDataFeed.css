@@ -24,3 +24,11 @@
     font-size: larger;
     font-weight: 500;
 }
+
+.nav-link {
+    width: 100% !important;
+}
+
+.nav-item {
+    width: 20% !important; 
+}

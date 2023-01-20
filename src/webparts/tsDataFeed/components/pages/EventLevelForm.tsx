@@ -13,7 +13,6 @@ import Alert from "react-bootstrap/Alert";
 import {
   chapterOptionsMaker,
   eventOptionsMaker,
-  nationalManagerOptionsMaker,
 } from "../../services/commonFunctions";
 interface IEventLevelForm {
   userName: string;
@@ -33,12 +32,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       Select Chapter
     </option>,
   ]);
-  const [nationalManagerOptions, setNationalManagerOptions] = useState([
-    <option value="Select National Manager" selected className="textItalic">
-      Select National Manager
-    </option>,
-  ]);
-  const [nationalManagerData, setNationalManagerData] = useState<any>([]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [initialEventDetails, setInitialEventDetails] = useState<any>({});
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
@@ -53,8 +46,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       overallTeamForecastYTD: null,
       overallTeamModifiedDate: null,
       forecastInfo: null,
-      campaignForecastYTD: null,
-      nationalManager: null,
+      campaignForecastYTD: null
     };
     const finalCampaignForecastYTD = (
       Number(eventDetails?.individualOtherForecastYTD) +
@@ -104,11 +96,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const chapterSelectHandler = (e: any) => {
     // call event list API
-    setNationalManagerOptions([
-      <option value="Select National Manager" selected className="textItalic">
-        Select National Manager
-      </option>,
-    ])
     setEventOptions([<option value="Select Event">Select Event</option>]);
     setEventDetails({});
     setInitialEventDetails({});
@@ -126,22 +113,11 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call event details API
-    setNationalManagerOptions([
-      <option value="Select National Manager" selected className="textItalic">
-        Select National Manager
-      </option>,
-    ])
     if (e.target.value !== "Select Event") {
-      AxiosInstance.get(`/event/${e.target.value}/fetchData`)
+        AxiosInstance.get(`/event/${e.target.value}/fetchData`)
         .then((res) => {
           setEventDetails(res?.data);
           setInitialEventDetails(res?.data);
-          setNationalManagerOptions(
-            nationalManagerOptionsMaker(
-              nationalManagerData,
-              res?.data?.nationalManager
-            )
-          );
         })
         .catch((error) => {
           console.log(error);
@@ -169,8 +145,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "individualOtherForecastYTD",
       "overallTeamForecastYTD",
       "forecastInfo",
-      "campaignForecastYTD",
-      "nationalManager",
+      "campaignForecastYTD"
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -189,10 +164,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setErrorState(true);
       });
-
-    AxiosInstance.get(`/meta/nationalManagerList/fetchData`).then((res) => {
-      setNationalManagerData(res?.data);
-    });
   }, []);
 
   useEffect(() => {
@@ -204,14 +175,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       setUpdatedSuccessfully("");
     }, 5000);
   }, [updatedSuccessfully]);
-
-  const selectNationalManagerHandler = (e: any) => {
-    setEventDetails({
-      ...eventDetails,
-      nationalManager:
-        e.target.value === "Select National Manager" ? null : e.target.value,
-    });
-  };
 
   const popover = (
     <Popover id="popover-basic">
@@ -226,7 +189,7 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
   return (
     <Card>
       <Card.Header>
-        <h3>Event Details</h3>
+        <h3>Event - Forecast Details</h3>
       </Card.Header>
       <Card.Body>
         <Form onSubmit={submitHandler}>
@@ -264,19 +227,6 @@ const EventLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 {eventOptions}
               </Form.Select>
             </Form.Group>
-          </Row>
-          <Row>
-            <Col xs={9}>
-              <Form.Group className="mb-3">
-                <Form.Label>National Manager: </Form.Label>
-                <Form.Select
-                  disabled={!eventDetails?.eventId}
-                  onChange={selectNationalManagerHandler}
-                >
-                  {nationalManagerOptions}
-                </Form.Select>
-              </Form.Group>
-            </Col>
           </Row>
           <Row>
             <Col xs={9}>

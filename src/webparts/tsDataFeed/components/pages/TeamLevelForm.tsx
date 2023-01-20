@@ -7,14 +7,11 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import {
-  teamAssociationCheckList,
-} from "../../services/constants";
+import { teamAssociationCheckList } from "../../services/constants";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
   priorityOptionsMaker,
-  staffLeadOptionsMaker,
 } from "../../services/commonFunctions";
 import AxiosInstance from "../../services/AxiosInstance";
 
@@ -36,12 +33,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       Select Team
     </option>,
   ]);
-  const [staffLeadOptions, setStaffLeadOptions] = useState([
-    <option value="Select Staff Lead" className="textItalic">
-      Select Staff Lead
-    </option>,
-  ]);
-  const [staffLeadData,setStaffLeadData] = useState<any>([]);
   const [teamDetails, setTeamDetails] = useState<any>({});
   const [initialTeamDetails, setInitialTeamDetails] = useState<any>({});
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
@@ -65,11 +56,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setErrorState(true);
       });
-
-    AxiosInstance.get(`/meta/leadStaffList/fetchData`).then((res)=> {
-      setStaffLeadData(res?.data);
-    })
-      
     // console.log("team page rendered");
   }, []);
 
@@ -91,7 +77,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "teamAssociation",
       "teamForecastYTD",
       "interactionNote",
-      "leadStaffName",
+      "leadStaffName"
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -109,7 +95,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamAssociation: null,
       teamForecastYTD: null,
       interactionNote: null,
-      leadStaffName: null,
+      leadStaffName: null
     };
     for (let i in initialTeamDetails) {
       if (initialTeamDetails[i] != teamDetails[i]) {
@@ -147,11 +133,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const eventSelectHandler = (e: any) => {
     //call team list from event API
-    setStaffLeadOptions([
-      <option value="Select Staff Lead" className="textItalic" selected>
-        Select Staff Lead
-      </option>,
-    ]);
     setTeamOptions([<option value="Select Team">Select Team</option>]);
     setTeamDetails({});
     setInitialTeamDetails({});
@@ -169,20 +150,12 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const teamSelectHandler = (e: any) => {
     //call team details API
-    setStaffLeadOptions([
-      <option value="Select Staff Lead" className="textItalic" selected>
-        Select Staff Lead
-      </option>,
-    ]);
 
     if (e.target.value !== "Select Team") {
-        AxiosInstance.get(`/team/${e.target.value}/fetchData`)
+      AxiosInstance.get(`/team/${e.target.value}/fetchData`)
         .then((res) => {
           setTeamDetails(res.data);
           setInitialTeamDetails(res.data);
-          setStaffLeadOptions(
-            staffLeadOptionsMaker(staffLeadData, res.data.leadStaffName)
-          );
         })
         .catch((error) => {
           console.log(error);
@@ -255,14 +228,6 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       ...teamDetails,
       teamPriorityRating:
         e.target.value === "Select Team Priority" ? null : e.target.value,
-    });
-  };
-
-  const selectLeadStaffHandler = (e: any) => {
-    setTeamDetails({
-      ...teamDetails,
-      leadStaffName:
-        e.target.value === "Select Staff Lead" ? null : e.target.value,
     });
   };
 
@@ -424,14 +389,19 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
           </Row>
           <Row>
             <Col xs={6}>
-              <Form.Group className="mb-3">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
                 <Form.Label>Staff Lead:</Form.Label>
-                <Form.Select
-                  onChange={selectLeadStaffHandler}
+                <Form.Control
+                  id="leadStaffName"
+                  type="text"
+                  placeholder="Enter Staff Lead"
+                  value={!teamDetails?.teamId?'':teamDetails?.leadStaffName}
                   disabled={!teamDetails?.teamId}
-                >
-                  {staffLeadOptions}
-                </Form.Select>
+                  onChange={changeInputHandler}
+                />
               </Form.Group>
             </Col>
           </Row>

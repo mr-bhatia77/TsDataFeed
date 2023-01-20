@@ -8,4 +8,5 @@ export const teamAssociationCheckList: string[] = [
   "RC Member/Team",
   "RC Secured",
   "Sponsor",
+  "Volunteer Leader"
 ];
