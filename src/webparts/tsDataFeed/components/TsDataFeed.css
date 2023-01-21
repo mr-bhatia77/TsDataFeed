@@ -27,8 +27,17 @@
 
 .nav-link {
     width: 100% !important;
+    height:100% !important;
+    font-size: large !important;
+    min-height: 8vh;
+    font-weight: 500;
+    color: #495057 !important;
 }
 
 .nav-item {
-    width: 20% !important; 
+    width: 165px !important; 
+}
+
+.nav-link.active {
+    color: #0d6efd !important;
 }

@@ -398,7 +398,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   id="leadStaffName"
                   type="text"
                   placeholder="Enter Staff Lead"
-                  value={!teamDetails?.teamId?'':teamDetails?.leadStaffName}
+                  value={!teamDetails?.leadStaffName?'':teamDetails?.leadStaffName}
                   disabled={!teamDetails?.teamId}
                   onChange={changeInputHandler}
                 />
