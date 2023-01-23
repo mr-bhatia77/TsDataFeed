@@ -102,28 +102,28 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
     }
-    // AxiosInstance.put(
-    //   `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
-    //   payload
-    // )
-    //   .then((res) => {
-    //     console.log("submitted successfully");
-    //     setUpdatedSuccessfully("success");
-    //     AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
-    //       .then((res) => {
-    //         setTeamDetails(res.data);
-    //         setInitialTeamDetails(res.data);
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //         setErrorState(true);
-    //       });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     setUpdatedSuccessfully("error");
-    //   });
-    console.log(userEmail, payload, teamDetails, initialTeamDetails);
+    AxiosInstance.put(
+      `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
+      payload
+    )
+      .then((res) => {
+        console.log("submitted successfully");
+        setUpdatedSuccessfully("success");
+        AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
+          .then((res) => {
+            setTeamDetails(res.data);
+            setInitialTeamDetails(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            setErrorState(true);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        setUpdatedSuccessfully("error");
+      });
+    // console.log(userEmail, payload, teamDetails, initialTeamDetails);
   };
   function validateAlpha(input: string) {
     if (input === "") {
