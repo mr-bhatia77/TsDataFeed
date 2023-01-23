@@ -77,7 +77,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "teamAssociation",
       "teamForecastYTD",
       "interactionNote",
-      "leadStaffName"
+      "leadStaffName",
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -95,40 +95,50 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamAssociation: null,
       teamForecastYTD: null,
       interactionNote: null,
-      leadStaffName: null
+      leadStaffName: null,
     };
     for (let i in initialTeamDetails) {
       if (initialTeamDetails[i] != teamDetails[i]) {
-        payload[i] = teamDetails[i];
+        payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
     }
-    AxiosInstance.put(
-      `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
-      payload
-    )
-      .then((res) => {
-        console.log("submitted successfully");
-        setUpdatedSuccessfully("success");
-        AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
-          .then((res) => {
-            setTeamDetails(res.data);
-            setInitialTeamDetails(res.data);
-          })
-          .catch((error) => {
-            console.log(error);
-            setErrorState(true);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-        setUpdatedSuccessfully("error");
-      });
-    // console.log(userEmail,payload,teamDetails,initialTeamDetails);
+    // AxiosInstance.put(
+    //   `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
+    //   payload
+    // )
+    //   .then((res) => {
+    //     console.log("submitted successfully");
+    //     setUpdatedSuccessfully("success");
+    //     AxiosInstance.get(`/team/${teamDetails?.teamId}/fetchData`)
+    //       .then((res) => {
+    //         setTeamDetails(res.data);
+    //         setInitialTeamDetails(res.data);
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //         setErrorState(true);
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     setUpdatedSuccessfully("error");
+    //   });
+    console.log(userEmail, payload, teamDetails, initialTeamDetails);
   };
+  function validateAlpha(input: string) {
+    if (input === "") {
+      return true;
+    }
+    const alphaExp = /^[a-zA-Z\s]+$/;
+    return alphaExp.test(input);
+  }
 
   const changeInputHandler = (e: any) => {
     // console.log(e.target.id);
-    setTeamDetails({ ...teamDetails, [e.target.id]: e.target.value });
+    if (e.target.id === "leadStaffName") {
+      if (validateAlpha(e.target.value))
+        setTeamDetails({ ...teamDetails, [e.target.id]: e.target.value });
+    } else setTeamDetails({ ...teamDetails, [e.target.id]: e.target.value });
   };
 
   const eventSelectHandler = (e: any) => {
@@ -398,7 +408,11 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   id="leadStaffName"
                   type="text"
                   placeholder="Enter Staff Lead"
-                  value={!teamDetails?.leadStaffName?'':teamDetails?.leadStaffName}
+                  value={
+                    !teamDetails?.leadStaffName
+                      ? ""
+                      : teamDetails?.leadStaffName
+                  }
                   disabled={!teamDetails?.teamId}
                   onChange={changeInputHandler}
                 />
