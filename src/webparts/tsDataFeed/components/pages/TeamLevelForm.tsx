@@ -301,7 +301,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             <Form.Group as={Col} className="mb-3">
               <Form.Label>Team Co-Captain Name:</Form.Label>
               <Form.Control
-                type="text"
+                as="textarea"
+                style={{resize: "none",height:'38px'}}
                 disabled
                 value={
                   teamDetails?.teamCoCaptain ? teamDetails?.teamCoCaptain : ""
