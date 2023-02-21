@@ -85,6 +85,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       "teamForecastYTD",
       "interactionNote",
       "leadStaffName",
+      "campName"
     ];
     let count = 0;
     matchTheseFields.forEach((field: string) => {
@@ -115,9 +116,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
     }
-    // if(initialTeamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails?.teamAssociation?.split(';')?.includes('Camp'))
-    // payload.campName = null;
-    // else
+    if(initialTeamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails?.teamAssociation?.split(';')?.includes('Camp'))
+    payload.campName = null;
+    else
     payload.campName = teamDetails.campName;
     AxiosInstance.put(
       `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
@@ -242,7 +243,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamAssociationHashMap[teamAssociation] = 1;
     });
     // console.log(teamAssociationHashMap);
-    const teamAssociationCheckboxes: any[] = teamAssociationCheckList.map(
+    const teamAssociationCheckboxes: any[] = teamAssociationCheckList?.map(
       (item: string) => {
         return (
           <Row>
