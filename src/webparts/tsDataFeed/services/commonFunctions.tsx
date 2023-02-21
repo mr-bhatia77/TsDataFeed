@@ -1,4 +1,5 @@
 import * as React from "react";
+import { campNameList } from "./constants";
 
 export const chapterOptionsMaker = (itemList: string[]) => {
   const chapterOptions: any[] = [
@@ -69,6 +70,20 @@ export const staffLeadOptionsMaker = (itemList: string[],selectedStaffLead?: str
     });
   }
   return staffLeadOptions;
+};
+
+export const campNameOptionsMaker = (selectedCampName?: string) => {
+  const campNameOptions: any[] = [
+    <option value="Select Camp" selected className="textItalic">Select Camp</option>,
+  ];
+  if (campNameList?.length) {
+    campNameList.forEach((item: any) => {
+      item && campNameOptions.push(
+        <option value={item} selected={item == selectedCampName}>{item}</option>
+      );
+    });
+  }
+  return campNameOptions;
 };
 
 export const nationalManagerOptionsMaker = (itemList: string[],selectedNationalManager?: string) => {

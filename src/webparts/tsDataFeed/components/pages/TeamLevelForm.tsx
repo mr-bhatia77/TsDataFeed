@@ -12,6 +12,7 @@ import {
   eventOptionsMaker,
   teamOptionsMaker,
   priorityOptionsMaker,
+  campNameOptionsMaker,
 } from "../../services/commonFunctions";
 import AxiosInstance from "../../services/AxiosInstance";
 
@@ -27,6 +28,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       Select Event
     </option>,
   ]);
+  const [campNameOptions, setCampNameOptions] = useState([]);
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [teamOptions, setTeamOptions] = useState([
     <option value="Select Team" className="textItalic">
@@ -56,6 +58,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setErrorState(true);
       });
+
+    setCampNameOptions(campNameOptionsMaker());
     // console.log("team page rendered");
   }, []);
 
@@ -67,11 +71,14 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   useEffect(() => {
     setSubmitDisabled(isFormValuesSame());
+    // console.log(teamDetails)
   }, [teamDetails, initialTeamDetails]);
 
-  const isFormValuesSame = () => {
+  const isFormValuesSame = () => { // this function returns true if we want to disable submit button 
+
     // console.log(initialTeamDetails,'initialTeamDetails');
     // console.log(teamDetails,'currentTeamDetails')
+
     const matchTheseFields = [
       "teamPriorityRating",
       "teamAssociation",
@@ -83,8 +90,13 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     matchTheseFields.forEach((field: string) => {
       if (initialTeamDetails[field] === teamDetails[field]) count++;
     });
-    // console.log(count)
-    return count === matchTheseFields.length ? true : false;
+
+    //check if camp is selected and campName is not chosen - disable submit button
+    if (teamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails.campName) {
+      return true
+    }
+    else
+      return count === matchTheseFields.length ? true : false;
   };
 
   const submitHandler = (e: any) => {
@@ -96,12 +108,17 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       teamForecastYTD: null,
       interactionNote: null,
       leadStaffName: null,
+      campName: null
     };
     for (let i in initialTeamDetails) {
       if (initialTeamDetails[i] != teamDetails[i]) {
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
     }
+    // if(initialTeamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails?.teamAssociation?.split(';')?.includes('Camp'))
+    // payload.campName = null;
+    // else
+    payload.campName = teamDetails.campName;
     AxiosInstance.put(
       `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
       payload
@@ -158,6 +175,15 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     }
   };
 
+  const campNameSelectHandler = (e: any) => {
+    //call team list from event API
+    setTeamDetails({
+      ...teamDetails,
+      campName:
+        e.target.value === "Select Camp" ? null : e.target.value,
+    });
+  };
+
   const teamSelectHandler = (e: any) => {
     //call team details API
 
@@ -166,6 +192,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         .then((res) => {
           setTeamDetails(res.data);
           setInitialTeamDetails(res.data);
+          setCampNameOptions(campNameOptionsMaker(res?.data?.campName));
         })
         .catch((error) => {
           console.log(error);
@@ -218,14 +245,27 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     const teamAssociationCheckboxes: any[] = teamAssociationCheckList.map(
       (item: string) => {
         return (
-          <Form.Check
-            type="checkbox"
-            label={item}
-            value={item}
-            checked={teamAssociationHashMap[item] == 1}
-            onChange={handleCheckBox}
-            disabled={!teamDetails?.teamId}
-          />
+          <Row>
+            <Col xs={2}>
+              <Form.Check
+                type="checkbox"
+                label={item}
+                value={item}
+                checked={teamAssociationHashMap[item] == 1}
+                onChange={handleCheckBox}
+                disabled={!teamDetails?.teamId}
+              />
+            </Col>
+            {item === "Camp" && teamDetails?.teamId && teamAssociationHashMap['Camp'] == 1 && (<Col xs={5}>
+              <Form.Group>
+                <Form.Select className='campSelect' onChange={campNameSelectHandler}>
+                  {campNameOptions}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            )}
+
+          </Row>
         );
       }
     );
@@ -302,7 +342,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               <Form.Label>Team Co-Captain Name:</Form.Label>
               <Form.Control
                 as="textarea"
-                style={{resize: "none",height:'38px'}}
+                style={{ resize: "none", height: "38px" }}
                 disabled
                 value={
                   teamDetails?.teamCoCaptain ? teamDetails?.teamCoCaptain : ""
@@ -339,8 +379,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   value={
                     teamDetails?.teamFundraisingGoal
                       ? new Intl.NumberFormat("en-US").format(
-                          teamDetails?.teamFundraisingGoal
-                        )
+                        teamDetails?.teamFundraisingGoal
+                      )
                       : ""
                   }
                 />
@@ -356,8 +396,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                   value={
                     teamDetails?.teamActualYTD
                       ? new Intl.NumberFormat("en-US").format(
-                          teamDetails?.teamActualYTD
-                        )
+                        teamDetails?.teamActualYTD
+                      )
                       : ""
                   }
                 />
