@@ -92,8 +92,12 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       if (initialTeamDetails[field] === teamDetails[field]) count++;
     });
 
-    //check if camp is selected and campName is not chosen - disable submit button
+    //check if camp is selected and campName is NOT chosen - disable submit button
     if (teamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails.campName) {
+      return true
+    }
+    //check if camp is NOT selected and campName IS chosen - disable submit button
+    else if (!teamDetails?.teamAssociation?.split(';')?.includes('Camp') && teamDetails.campName) {
       return true
     }
     else
@@ -111,15 +115,21 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       leadStaffName: null,
       campName: null
     };
+
     for (let i in initialTeamDetails) {
-      if (initialTeamDetails[i] != teamDetails[i]) {
+      if (i === 'teamAssociation') {
+        initialTeamDetails[i] === teamDetails[i] ? payload[i] = initialTeamDetails[i] : null;
+      }
+      else if (initialTeamDetails[i] != teamDetails[i]) {
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
     }
-    if(initialTeamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails?.teamAssociation?.split(';')?.includes('Camp'))
-    payload.campName = null;
-    else
-    payload.campName = teamDetails.campName;
+
+    if (initialTeamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails?.teamAssociation?.split(';')?.includes('Camp'))
+      payload.campName = null;
+    // else
+    //   payload.campName = teamDetails.campName;
+
     AxiosInstance.put(
       `/team/UpdateTeamDetails/${teamDetails?.teamId}?userName=${userEmail}`,
       payload
@@ -141,7 +151,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setUpdatedSuccessfully("error");
       });
-    // console.log(userEmail, payload, teamDetails, initialTeamDetails);
+    // console.log(userEmail, payload)
+    // , teamDetails, initialTeamDetails);
   };
   function validateAlpha(input: string) {
     if (input === "") {

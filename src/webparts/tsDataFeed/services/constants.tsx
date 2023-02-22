@@ -31,8 +31,8 @@ export const fakeTeamResponse:{[key:string]:any} = {
   "teamId":9096,"eventId":657,
   "eventName":"PH 2023 Take Steps Walk Philadelphia",
   "teamName":"Team Silly","teamCaptainName":"Naomi Wetmore","teamCoCaptain":null,"numberTeamMemberIncludingCaptain":1,"teamFundraisingGoal":1500.0,"teamPriorityRating":"B",
-  "teamAssociation":'Camp',
   "teamForecastYTD":null,"leadStaffName":"Melanie Zhitnitsky","interactionNote":null,
   "teamActualYTD":null,
+  "teamAssociation":'Chair',
   "campName":'Camp Oasis of Missouri',
 }
