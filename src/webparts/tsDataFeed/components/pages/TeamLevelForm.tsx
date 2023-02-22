@@ -155,7 +155,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         setUpdatedSuccessfully("error");
       });
     console.log(userEmail, payload)
-    , teamDetails, initialTeamDetails);
+    // , teamDetails, initialTeamDetails);
   };
   function validateAlpha(input: string) {
     if (input === "") {
