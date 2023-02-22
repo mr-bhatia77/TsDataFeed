@@ -15,7 +15,6 @@ export const campNameList: string[] = [
   'Camp Oasis of Pennsylvania',
   'Camp Oasis of Michigan',
   'Camp Oasis of Minnesota',
-  'Camp Oasis of New York',
   'Camp Oasis of Washington',
   'Camp Oasis of Georgia',
   'Camp Oasis of California',

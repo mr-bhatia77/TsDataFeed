@@ -119,8 +119,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     };
 
     for (let i in initialTeamDetails) {
-      if (i === 'teamAssociation') {
-        initialTeamDetails[i] === teamDetails[i] ? payload[i] = initialTeamDetails[i] : payload[i] = payload[i] = teamDetails[i];
+      if (i === 'teamAssociation' || i === 'campName') {
+        initialTeamDetails[i] === teamDetails[i] ? payload[i] = initialTeamDetails[i] : payload[i] = teamDetails[i];
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
       else if (initialTeamDetails[i] != teamDetails[i]) {
@@ -154,8 +154,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
         console.log(error);
         setUpdatedSuccessfully("error");
       });
-    // console.log(userEmail, payload)
-    // , teamDetails, initialTeamDetails);
+    console.log(userEmail, payload)
+    , teamDetails, initialTeamDetails);
   };
   function validateAlpha(input: string) {
     if (input === "") {
