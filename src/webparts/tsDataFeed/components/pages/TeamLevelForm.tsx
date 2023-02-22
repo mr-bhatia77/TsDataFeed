@@ -7,7 +7,9 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { teamAssociationCheckList } from "../../services/constants";
+import { teamAssociationCheckList,
+  // fakeTeamResponse
+ } from "../../services/constants";
 import {
   eventOptionsMaker,
   teamOptionsMaker,
@@ -97,9 +99,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       return true
     }
     //check if camp is NOT selected and campName IS chosen - disable submit button
-    else if (!teamDetails?.teamAssociation?.split(';')?.includes('Camp') && teamDetails.campName) {
-      return true
-    }
+    // else if (!teamDetails?.teamAssociation?.split(';')?.includes('Camp') && teamDetails.campName) {
+    //   return true
+    // }
     else
       return count === matchTheseFields.length ? true : false;
   };
@@ -118,7 +120,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
     for (let i in initialTeamDetails) {
       if (i === 'teamAssociation') {
-        initialTeamDetails[i] === teamDetails[i] ? payload[i] = initialTeamDetails[i] : null;
+        initialTeamDetails[i] === teamDetails[i] ? payload[i] = initialTeamDetails[i] : payload[i] = payload[i] = teamDetails[i];
+        payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
       }
       else if (initialTeamDetails[i] != teamDetails[i]) {
         payload[i] = teamDetails[i] === "" ? null : teamDetails[i];
@@ -205,6 +208,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
           setTeamDetails(res.data);
           setInitialTeamDetails(res.data);
           setCampNameOptions(campNameOptionsMaker(res?.data?.campName));
+          // setTeamDetails(fakeTeamResponse);
+          // setInitialTeamDetails(fakeTeamResponse);
+          // setCampNameOptions(campNameOptionsMaker(fakeTeamResponse?.campName));
         })
         .catch((error) => {
           console.log(error);

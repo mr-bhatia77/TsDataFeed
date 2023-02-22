@@ -27,12 +27,8 @@ export const campNameList: string[] = [
   'Camp Oasis @ Home'
 ]
 
-export const fakeTeamResponse:{[key:string]:any} = {
-  "teamId":9096,"eventId":657,
-  "eventName":"PH 2023 Take Steps Walk Philadelphia",
-  "teamName":"Team Silly","teamCaptainName":"Naomi Wetmore","teamCoCaptain":null,"numberTeamMemberIncludingCaptain":1,"teamFundraisingGoal":1500.0,"teamPriorityRating":"B",
-  "teamForecastYTD":null,"leadStaffName":"Melanie Zhitnitsky","interactionNote":null,
-  "teamActualYTD":null,
-  "teamAssociation":'Chair',
-  "campName":'Camp Oasis of Missouri',
-}
+export const fakeTeamResponse:{[key:string]:any} = 
+  {"teamId":9135,"eventId":632,"eventName":"LI 2023 Take Steps Walk Gold Coast","teamName":"Linell's Take Steps Pals","teamCaptainName":"Linell Baumann","teamCoCaptain":null,"numberTeamMemberIncludingCaptain":1,"teamFundraisingGoal":500.0,"teamPriorityRating":null,
+  "teamAssociation":'Camp',
+  "teamForecastYTD":null,"leadStaffName":"test name again","interactionNote":null,"teamActualYTD":null,
+  "campName":"Camp Oasis of Minnesota"}
