@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/tsdata'
+    baseURL: 'https://analytics.crohnscolitisfoundation.org/tsdata'
 });
 
 export default AxiosInstance;

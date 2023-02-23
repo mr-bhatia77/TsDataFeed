@@ -248,6 +248,9 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
   const handleCheckBox = (e: any) => {
     // console.log(e.target.checked);
+    if(e.target.value === 'Camp' && !e.target.checked) {
+      setIsCampError(false)
+    }
     setTeamDetails({
       ...teamDetails,
       teamAssociation: getAssociationCheckboxList(
