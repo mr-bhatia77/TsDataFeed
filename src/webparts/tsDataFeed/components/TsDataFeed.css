@@ -47,3 +47,8 @@
     height: 25px;
     padding: 0px 5px;
 }
+
+.textRed{
+    color: red;
+    font-size: 12px;
+}

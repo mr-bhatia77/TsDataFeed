@@ -38,6 +38,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
     </option>,
   ]);
   const [teamDetails, setTeamDetails] = useState<any>({});
+  const [isCampError,setIsCampError] = useState<boolean>(false)
   const [initialTeamDetails, setInitialTeamDetails] = useState<any>({});
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState<string>("");
   const [errorState, setErrorState] = useState<boolean>(false);
@@ -96,6 +97,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
 
     //check if camp is selected and campName is NOT chosen - disable submit button
     if (teamDetails?.teamAssociation?.split(';')?.includes('Camp') && !teamDetails.campName) {
+      setIsCampError(true);
       return true
     }
     //check if camp is NOT selected and campName IS chosen - disable submit button
@@ -144,6 +146,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
           .then((res) => {
             setTeamDetails(res.data);
             setInitialTeamDetails(res.data);
+            setCampNameOptions(campNameOptionsMaker(res?.data?.campName));
           })
           .catch((error) => {
             console.log(error);
@@ -197,6 +200,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
       campName:
         e.target.value === "Select Camp" ? null : e.target.value,
     });
+    setIsCampError(e.target.value === "Select Camp" ?true:false)
   };
 
   const teamSelectHandler = (e: any) => {
@@ -274,13 +278,18 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
                 disabled={!teamDetails?.teamId}
               />
             </Col>
-            {item === "Camp" && teamDetails?.teamId && teamAssociationHashMap['Camp'] == 1 && (<Col xs={5}>
-              <Form.Group>
+            {item === "Camp" && teamDetails?.teamId && teamAssociationHashMap['Camp'] == 1 && (<Col xs={6}>
+              <Row>
+                <Col xs={10} style={{paddingRight:'0px'}}><Form.Group>
                 <Form.Select className='campSelect' onChange={campNameSelectHandler}>
                   {campNameOptions}
                 </Form.Select>
               </Form.Group>
+              </Col>
+              <Col xs={2} style={{paddingLeft:'5px',fontSize:'14px'}}><span className="textRed">*</span></Col>
+              </Row>
             </Col>
+            
             )}
 
           </Row>
@@ -510,7 +519,7 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
             />
             <Form.Text className="text-muted">(max 4000 characters)</Form.Text>
           </Form.Group>
-          <Row>
+          <Row style={{height: '40px'}}>
             <Col xs={2}>
               <Button
                 className="mb-3"
@@ -534,6 +543,8 @@ const TeamLevelForm: FunctionComponent<IEventLevelForm> = (props) => {
               )}
             </Col>
           </Row>
+          {isCampError && <Row>
+            <p className="textRed">* Please select camp name!</p></Row>}
         </Form>
       </Card.Body>
     </Card>
